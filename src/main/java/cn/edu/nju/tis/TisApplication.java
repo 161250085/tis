@@ -8,7 +8,6 @@ public class TisApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TisApplication.class, args);
-        //knhb
     }
 
 }
