@@ -1,7 +1,7 @@
 package cn.edu.nju.tis.serviceImpl;
 
 import cn.edu.nju.tis.bean.ResultMessageBean;
-import cn.edu.nju.tis.service.infoExtrationService.ElementExtractionService;
+import cn.edu.nju.tis.service.ElementExtractionService;
 import cn.edu.nju.tis.utils.ImportXMLUtil;
 import org.springframework.stereotype.Service;
 

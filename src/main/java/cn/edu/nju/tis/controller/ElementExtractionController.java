@@ -1,6 +1,6 @@
 package cn.edu.nju.tis.controller;
 import cn.edu.nju.tis.bean.ResultMessageBean;
-import cn.edu.nju.tis.service.infoExtrationService.ElementExtractionService;
+import cn.edu.nju.tis.service.ElementExtractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
