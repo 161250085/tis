@@ -1,10 +1,11 @@
 package cn.edu.nju.tis.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "info_items")
-public class InformationItem {
+public class InformationItem implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "info_item_id")

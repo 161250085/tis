@@ -1,4 +1,4 @@
-package cn.edu.nju.tis.utils;
+package cn.edu.nju.tis.model;
 
 public enum COAType {
     CRIMINAL,

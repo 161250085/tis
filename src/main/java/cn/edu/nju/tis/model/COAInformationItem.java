@@ -1,48 +1,48 @@
 package cn.edu.nju.tis.model;
 
-import cn.edu.nju.tis.utils.COAInfoItemKey;
-
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "coa_info_items")
 @IdClass(COAInfoItemKey.class)
-public class COAInformationItem {
+public class COAInformationItem implements Serializable {
     @Id
     @Column(name = "info_item_id")
-    private Integer info_id;
+    private Integer infoId;
 
     @Id
-    private Integer coa_id;
+    @Column(name = "coa_id")
+    private Integer coaId;
 
     public COAInformationItem() {
     }
 
-    public COAInformationItem(Integer info_id, Integer coa_id) {
-        this.info_id = info_id;
-        this.coa_id = coa_id;
+    public COAInformationItem(Integer infoId, Integer coaId) {
+        this.infoId = infoId;
+        this.coaId = coaId;
     }
 
-    public Integer getInfo_id() {
-        return info_id;
+    public Integer getInfoId() {
+        return infoId;
     }
 
-    public void setInfo_id(Integer info_id) {
-        this.info_id = info_id;
+    public void setInfoId(Integer infoId) {
+        this.infoId = infoId;
     }
 
-    public Integer getCoa_id() {
-        return coa_id;
+    public Integer getCoaId() {
+        return coaId;
     }
 
-    public void setCoa_id(Integer coa_id) {
-        this.coa_id = coa_id;
+    public void setCoaId(Integer coaId) {
+        this.coaId = coaId;
     }
 
     @Override
     public String toString() {
         return "COAInformationItem{"+
-                "信息项id="+info_id+
-                "案由id="+coa_id+'}';
+                "信息项id="+infoId+
+                "案由id="+coaId+'}';
     }
 }

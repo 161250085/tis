@@ -1,12 +1,11 @@
 package cn.edu.nju.tis.model;
 
-import cn.edu.nju.tis.utils.COAType;
-
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "cause_of_actions")
-public class CauseOfAction {
+public class CauseOfAction implements Serializable {
     @Id
     @Column(name = "coa_id")
     @GeneratedValue
@@ -19,15 +18,15 @@ public class CauseOfAction {
     @Column(name = "coa_name")
     private String name;
 
-    private String user_id;
+    private String account;
 
     public CauseOfAction(){
     }
 
-    public CauseOfAction(COAType type, String name, String user_id){
+    public CauseOfAction(COAType type, String name, String account){
         this.type = type;
         this.name = name;
-        this.user_id = user_id;
+        this.account = account;
     }
 
     public Integer getId() {
@@ -55,11 +54,11 @@ public class CauseOfAction {
     }
 
     public String getUser_id() {
-        return user_id;
+        return account;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUser_id(String account) {
+        this.account = account;
     }
 
     @Override
@@ -68,6 +67,6 @@ public class CauseOfAction {
                 "案由id=" + id +
                 "案由种类=" + type +
                 "案由名称=" + name +
-                "创建人=" + user_id +'}';
+                "创建人=" + account +'}';
     }
 }

@@ -1,4 +1,4 @@
-package cn.edu.nju.tis.utils;
+package cn.edu.nju.tis.model;
 
 import java.io.Serializable;
 
