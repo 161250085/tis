@@ -1,4 +1,4 @@
-package cn.edu.nju.tis.serviceImpl.infoExtrationServiceImpl;
+package cn.edu.nju.tis.serviceImpl;
 
 import cn.edu.nju.tis.bean.ResultMessageBean;
 import cn.edu.nju.tis.service.infoExtrationService.ElementExtractionService;
