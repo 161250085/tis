@@ -3,38 +3,31 @@ package cn.edu.nju.tis.model;
 import java.io.Serializable;
 
 public class COAInfoItemKey implements Serializable {
-    private Integer info_item_id;
-    private Integer coa_id;
-
-    public COAInfoItemKey(){}
-
-    public COAInfoItemKey(Integer info_item_id, Integer coa_id) {
-        this.info_item_id = info_item_id;
-        this.coa_id = coa_id;
-    }
+    private Integer infoId;
+    private Integer coaId;
 
     public Integer getInfo_item_id() {
-        return info_item_id;
+        return infoId;
     }
 
     public void setInfo_item_id(Integer info_item_id) {
-        this.info_item_id = info_item_id;
+        this.infoId = info_item_id;
     }
 
     public Integer getCoa_id() {
-        return coa_id;
+        return coaId;
     }
 
     public void setCoa_id(Integer coa_id) {
-        this.coa_id = coa_id;
+        this.coaId = coa_id;
     }
 
     @Override
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ((info_item_id == null) ? 0 : info_item_id.hashCode());
-        result = PRIME * result + ((coa_id == null) ? 0 : coa_id.hashCode());
+        result = PRIME * result + ((infoId == null) ? 0 : infoId.hashCode());
+        result = PRIME * result + ((coaId == null) ? 0 : coaId.hashCode());
         return result;
     }
 
@@ -51,15 +44,15 @@ public class COAInfoItemKey implements Serializable {
         }
 
         final COAInfoItemKey other = (COAInfoItemKey)obj;
-        if(info_item_id == null){
-            if(other.info_item_id != null){
+        if(infoId == null){
+            if(other.infoId != null){
                 return false;
             }
-        }else if(!info_item_id.equals(other.info_item_id)){
+        }else if(!infoId.equals(other.infoId)){
             return false;
         }
-        if(coa_id == null){
-            return other.coa_id == null;
-        }else return coa_id.equals(other.coa_id);
+        if(coaId == null){
+            return other.coaId== null;
+        }else return coaId.equals(other.coaId);
     }
 }

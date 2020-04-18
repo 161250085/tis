@@ -10,6 +10,6 @@ public interface InformationItemRepository extends JpaRepository<InformationItem
 
     List<InformationItem> findByName(String name);
 
-    List<InformationItem> findAccount(String account);
+    List<InformationItem> findByAccount(String account);
 
 }
