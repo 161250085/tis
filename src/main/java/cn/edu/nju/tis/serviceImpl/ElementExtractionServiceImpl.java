@@ -18,7 +18,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     @Override
     public ResultMessageBean element_extraction(String xml_address, String destination_address) {
         if(!ImportXMLUtil.isValidXML(xml_address)){
-            return new ResultMessageBean("-1", ResultMessageBean.ERROR);
+            return null;//new ResultMessageBean("-1", ResultMessageBean.ERROR);
         }
         else{
             return null;

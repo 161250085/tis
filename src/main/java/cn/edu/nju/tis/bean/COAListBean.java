@@ -6,7 +6,7 @@ import java.util.List;
 
 public class COAListBean {
     public Integer coaId;
-    public COAType type;
+    public String type;
     public String coaName;
     public String account;
     List<COAListBean> coaListBeans;
@@ -15,7 +15,7 @@ public class COAListBean {
 
     public COAListBean(Integer coaId, COAType type, String coaName, String account) {
         this.coaId = coaId;
-        this.type = type;
+        this.type = type.value;
         this.coaName = coaName;
         this.account = account;
     }
@@ -28,12 +28,12 @@ public class COAListBean {
         this.coaId = coaId;
     }
 
-    public COAType getType() {
+    public String getType() {
         return type;
     }
 
     public void setType(COAType type) {
-        this.type = type;
+        this.type = type.value;
     }
 
     public String getCoaName() {

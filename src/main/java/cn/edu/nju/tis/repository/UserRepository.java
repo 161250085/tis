@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByNameAndType(String name, UserType type);
 
+    //根据用户名密码查找用户
+    User findFirstByNameAndPsw(String username, String password);
+
 }

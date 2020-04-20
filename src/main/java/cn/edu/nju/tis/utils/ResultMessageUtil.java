@@ -1,9 +1,6 @@
 package cn.edu.nju.tis.utils;
 
 import cn.edu.nju.tis.bean.ResultMessageBean;
-
-import static cn.edu.nju.tis.bean.ResultMessageBean.SUCCESS;
-
 /**
  * @ClassName ResultMessageUtil
  * @Description TODO
@@ -16,7 +13,7 @@ public class ResultMessageUtil {
     public static ResultMessageBean success(Object resultData){
         ResultMessageBean result = new ResultMessageBean();
         result.setResultCode(0);
-        result.setResultMessage(SUCCESS);
+        result.setResultMessage(ResultMessageBean.SUCCESS);
         result.setResultData(resultData);
         return result;
     }
