@@ -1,6 +1,10 @@
 package cn.edu.nju.tis.model;
 
 public enum UserType {
-    Manager,
-    Ordinary
+    MANAGER("Manager"),
+    ORDINARY("Ordinary");
+    public final String value;
+    UserType(String value) {
+        this.value = value;
+    }
 }

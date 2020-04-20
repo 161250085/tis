@@ -13,7 +13,7 @@ public class CauseOfAction implements Serializable {
 
     @Column(name = "coa_type")
     @Enumerated(EnumType.STRING)
-    private COAType type;
+    private String type;
 
     @Column(name = "coa_name")
     private String name;
@@ -24,7 +24,7 @@ public class CauseOfAction implements Serializable {
     }
 
     public CauseOfAction(COAType type, String name, String account){
-        this.type = type;
+        this.type = type.value;
         this.name = name;
         this.account = account;
     }
@@ -37,12 +37,12 @@ public class CauseOfAction implements Serializable {
         this.id = id;
     }
 
-    public COAType getType() {
+    public String getType() {
         return type;
     }
 
     public void setType(COAType type) {
-        this.type = type;
+        this.type = type.value;
     }
 
     public String getName() {

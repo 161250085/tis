@@ -6,7 +6,7 @@ import cn.edu.nju.tis.model.UserType;
 public class UserBean {
     public String account;
     public String userName;
-    public UserType type;
+    public String type;
 
     public UserBean(){}
 
@@ -19,6 +19,6 @@ public class UserBean {
     public UserBean(String account, String name, UserType type){
         this.account = account;
         this.userName = name;
-        this.type = type;
+        this.type = type.value;
     }
 }
