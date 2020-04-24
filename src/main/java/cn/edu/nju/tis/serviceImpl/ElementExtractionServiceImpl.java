@@ -21,6 +21,14 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     InformationItemRepository informationItemRepository;
     @Autowired
     COARepository coaRepository;
+
+    /**
+     * @Author cruck
+     * @Description //根据案由名称，通过反射调用信息项抽取方法，并且返回String类型的xml格式的数据
+     * @Date 20:53 2020/4/24
+     * @Param [coaName]
+     * @return java.lang.String
+     **/
     @Override
     public String itemsExtraction(String coaName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
 
