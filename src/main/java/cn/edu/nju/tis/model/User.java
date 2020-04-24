@@ -24,10 +24,9 @@ public class User {
     @Column(name = "user_type")
     private String type;
 
-    public User() {
-    }
+    public User(){}
 
-    public User(String psw, String name, UserType type) {
+    public User(String psw, String name, UserType type){
         this.account = AccountUtil.randomAccount(16);
         this.psw = psw;
         this.name = name;
@@ -65,4 +64,46 @@ public class User {
     public void setType(UserType type) {
         this.type = type.value;
     }
+
+
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        List<GrantedAuthority> authorities = new ArrayList<>();
+//        if (this.type == UserType.Manager) {
+//            authorities.add(new SimpleGrantedAuthority("MANAGER"));
+//        } else if (this.type == UserType.Ordinary) {
+//            authorities.add(new SimpleGrantedAuthority("Ordinary"));
+//        }
+//        return authorities;
+//    }
+
+//    @Override
+//    public String getPassword() {
+//        return psw;
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return name;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return true;
+//    }
 }

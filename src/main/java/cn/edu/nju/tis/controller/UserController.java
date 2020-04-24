@@ -15,7 +15,7 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ResultMessageBean login(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password){
+    public ResultMessageBean<Object> login(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password){
         if(loginService.findByUsernameAndPassword(username,password)!=null){
             User userLogin = loginService.findByUsernameAndPassword(username,password);
             return ResultMessageUtil.success(userLogin);

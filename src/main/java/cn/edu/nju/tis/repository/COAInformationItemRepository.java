@@ -11,5 +11,4 @@ public interface COAInformationItemRepository extends JpaRepository<COAInformati
     List<COAInformationItem> findByInfoId(Integer infoId);
 
     COAInformationItem findByInfoIdAndCoaId(Integer infoId, Integer coaId);
-
 }

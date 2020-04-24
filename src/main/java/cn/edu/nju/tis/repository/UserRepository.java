@@ -1,7 +1,6 @@
 package cn.edu.nju.tis.repository;
 
 import cn.edu.nju.tis.model.User;
-import cn.edu.nju.tis.model.UserType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,11 +15,11 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     User findByAccount(String account);
 
-    List<User> findByType(UserType type);
+    List<User> findByType(String type);
 
     User findByName(String name);
 
-    User findByNameAndType(String name, UserType type);
+    User findByNameAndType(String name, String type);
 
     //根据用户名密码查找用户
     User findFirstByNameAndPsw(String username, String password);

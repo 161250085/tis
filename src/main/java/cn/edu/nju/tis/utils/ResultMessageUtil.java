@@ -10,21 +10,21 @@ import cn.edu.nju.tis.bean.ResultMessageBean;
  **/
 public class ResultMessageUtil {
     //当正确时返回的值
-    public static ResultMessageBean success(Object resultData){
-        ResultMessageBean result = new ResultMessageBean();
+    public static ResultMessageBean<Object> success(Object resultData){
+        ResultMessageBean<Object> result = new ResultMessageBean<>();
         result.setResultCode(0);
         result.setResultMessage(ResultMessageBean.SUCCESS);
         result.setResultData(resultData);
         return result;
     }
 
-    public static ResultMessageBean success(){
+    public static ResultMessageBean<Object> success(){
         return success(null);
     }
 
     //当错误时返回的值
-    public static ResultMessageBean error(int resultCode,String resultMessage){
-        ResultMessageBean result = new ResultMessageBean();
+    public static ResultMessageBean<Object> error(int resultCode,String resultMessage){
+        ResultMessageBean<Object> result = new ResultMessageBean<>();
         result.setResultCode(resultCode);
         result.setResultMessage(resultMessage);
         return result;
