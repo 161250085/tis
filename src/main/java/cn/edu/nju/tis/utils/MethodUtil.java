@@ -9,11 +9,10 @@ public class MethodUtil {
      * @Date 09:56 2020/4/23
      * @Param [type, itemName, code]
      **/
-    public  static void addMethod(String type, String itemName, String code) throws Exception {
+    public  static void addMethod(String type, String code) throws Exception {
         ChineseCharToEn chineseCharToEn = ChineseCharToEn.getInstance();
         //这边不考虑信息项首字母重复情况
         String methodDeclaration = getMethodDeclaration(code);
-        String methodName = chineseCharToEn.getAllFirstLetter(itemName);
         switch (type) {
             case "CIVIL":
                 insertMethod(methodDeclaration + ";\n", "src/main/java/cn/edu/nju/tis/service/CivilExtractionService.java");

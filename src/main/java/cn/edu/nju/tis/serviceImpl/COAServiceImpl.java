@@ -49,12 +49,11 @@ public class COAServiceImpl implements COAService {
             informationItemRepository.save(new InformationItem(entry.getKey(),entry.getValue(),userAccount));
             coaInformationItemRepository.save(new COAInformationItem(informationItemRepository.findByName(entry.getKey()).getId(),coaId));
             //然后添加方法,根据种类进行添加
-            MethodUtil.addMethod(type,entry.getKey(),entry.getValue());
+            MethodUtil.addMethod(type,entry.getValue());
         }
         //最后将已有的item和coa联系起来，加入数据库
         for(String item:existedItem){
             Integer infoId = informationItemRepository.findByName(item).getId();
-
             coaInformationItemRepository.save(new COAInformationItem(infoId, coaId));
         }
         return ResultMessageUtil.success();
