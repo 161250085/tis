@@ -11,6 +11,7 @@ import cn.edu.nju.tis.repository.InformationItemRepository;
 import cn.edu.nju.tis.service.COAService;
 import cn.edu.nju.tis.utils.MethodUtil;
 import cn.edu.nju.tis.utils.ResultMessageUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class COAServiceImpl implements COAService {
+    @Autowired
     COARepository coaRepository;
+    @Autowired
     InformationItemRepository informationItemRepository;
+    @Autowired
     COAInformationItemRepository coaInformationItemRepository;
     @Override
     public ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, ConcurrentHashMap<String, String> itemAndCode, List<String> existedItem) throws Exception {
