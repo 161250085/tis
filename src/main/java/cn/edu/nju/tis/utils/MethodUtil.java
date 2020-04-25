@@ -1,8 +1,17 @@
 package cn.edu.nju.tis.utils;
 
+import org.springframework.util.ClassUtils;
+
 import java.io.RandomAccessFile;
+import java.util.Objects;
 
 public class MethodUtil {
+    private static final String CIVILSERVICE = "src/main/java/cn/edu/nju/tis/service/CivilExtractionService.java";
+    private static final String CIVILSERVICEIMPL ="src/main/java/cn/edu/nju/tis/serviceImpl/CivilExtractionServiceImpl.java";
+    private static final String ADMINISTRACTIVESERVICE ="src/main/java/cn/edu/nju/tis/service/AdministrativeExtractionService.java";
+    private static final String ADMINISTRACTIVESERVICEIMPL = "src/main/java/cn/edu/nju/tis/serviceImpl/AdministrativeExtractionServiceImpl.java";
+    private static final String CRIMINALSERVICE = "src/main/java/cn/edu/nju/tis/service/CriminalExtractionService.java";
+    private static final String CRIMINALSERVICEIMPL = "src/main/java/cn/edu/nju/tis/serviceImpl/CriminalExtractionServiceImpl.java";
     /**
      * @Author cruck
      * @Description //修改方法，在service和serviceImpl里添加方法
@@ -13,18 +22,22 @@ public class MethodUtil {
         ChineseCharToEn chineseCharToEn = ChineseCharToEn.getInstance();
         //这边不考虑信息项首字母重复情况
         String methodDeclaration = getMethodDeclaration(code);
+        String localAddress = Objects.requireNonNull(Objects.requireNonNull(ClassUtils.getDefaultClassLoader()).getResource("")).getPath();
+        int length = localAddress.length();
+        String realAddress = localAddress.substring(0,length-15);
+
         switch (type) {
             case "CIVIL":
-                insertMethod(methodDeclaration + ";\n", "src/main/java/cn/edu/nju/tis/service/CivilExtractionService.java");
-                insertMethod(code + "\n" + "}", "src/main/java/cn/edu/nju/tis/serviceImpl/CivilExtractionServiceImpl.java");
+                insertMethod(methodDeclaration + ";\n}", realAddress+CIVILSERVICE);
+                insertMethod(code + "\n" + "}", realAddress+CIVILSERVICEIMPL);
                 return;
             case "CRIMINAL":
-                insertMethod(methodDeclaration + ";\n", "src/main/java/cn/edu/nju/tis/service/CriminalExtractionService.java");
-                insertMethod(code + "\n" + "}", "src/main/java/cn/edu/nju/tis/serviceImpl/CriminalExtractionServiceImpl.java");
+                insertMethod(methodDeclaration + ";\n}", realAddress+CRIMINALSERVICE);
+                insertMethod(code + "\n" + "}", realAddress+CRIMINALSERVICEIMPL);
                 return;
             case "ADMINISTRATIVE":
-                insertMethod(methodDeclaration + ";\n", "src/main/java/cn/edu/nju/tis/service/AdministrativeExtractionService.java");
-                insertMethod(code + "\n" + "}", "src/main/java/cn/edu/nju/tis/serviceImpl/AdministrativeExtractionServiceImpl.java");
+                insertMethod(methodDeclaration + ";\n}", realAddress+ADMINISTRACTIVESERVICE);
+                insertMethod(code + "\n" + "}", realAddress+ADMINISTRACTIVESERVICEIMPL);
         }
     }
 

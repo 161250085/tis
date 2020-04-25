@@ -12,7 +12,6 @@ public class CauseOfAction implements Serializable {
     private Integer id;
 
     @Column(name = "coa_type")
-    @Enumerated(EnumType.STRING)
     private String type;
 
     @Column(name = "coa_name")
