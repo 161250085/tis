@@ -6,6 +6,7 @@ import java.io.RandomAccessFile;
 import java.util.Objects;
 
 public class MethodUtil {
+    //保存了
     private static final String CIVILSERVICE = "src/main/java/cn/edu/nju/tis/service/CivilExtractionService.java";
     private static final String CIVILSERVICEIMPL ="src/main/java/cn/edu/nju/tis/serviceImpl/CivilExtractionServiceImpl.java";
     private static final String ADMINISTRACTIVESERVICE ="src/main/java/cn/edu/nju/tis/service/AdministrativeExtractionService.java";
@@ -29,15 +30,15 @@ public class MethodUtil {
         switch (type) {
             case "CIVIL":
                 insertMethod(methodDeclaration + ";\n}", realAddress+CIVILSERVICE);
-                insertMethod(code + "\n" + "}", realAddress+CIVILSERVICEIMPL);
+                insertMethod("@Override\n"+code + "\n" + "}", realAddress+CIVILSERVICEIMPL);
                 return;
             case "CRIMINAL":
                 insertMethod(methodDeclaration + ";\n}", realAddress+CRIMINALSERVICE);
-                insertMethod(code + "\n" + "}", realAddress+CRIMINALSERVICEIMPL);
+                insertMethod("@Override\n"+code + "\n" + "}", realAddress+CRIMINALSERVICEIMPL);
                 return;
             case "ADMINISTRATIVE":
                 insertMethod(methodDeclaration + ";\n}", realAddress+ADMINISTRACTIVESERVICE);
-                insertMethod(code + "\n" + "}", realAddress+ADMINISTRACTIVESERVICEIMPL);
+                insertMethod("@Override\n"+code + "\n" + "}", realAddress+ADMINISTRACTIVESERVICEIMPL);
         }
     }
 
@@ -51,7 +52,7 @@ public class MethodUtil {
     //得到代码里的方法声明
     private static String getMethodDeclaration(String code) {
         int index = code.indexOf('{');
-        return code.substring(0,index);
+        return code.substring(6,index);
     }
 
     //换行之后再写
