@@ -22,6 +22,17 @@ public class InformationItem implements Serializable {
 
     public InformationItem(){}
 
+    public InformationItem(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
+    public InformationItem(int id, String name, String account){
+        this.id = id;
+        this.name = name;
+        this.account = account;
+    }
+
     public InformationItem(String name, String code, String account){
         this.name = name;
         this.code = code;

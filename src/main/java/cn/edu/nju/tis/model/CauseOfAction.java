@@ -17,6 +17,7 @@ public class CauseOfAction implements Serializable {
     @Column(name = "coa_name")
     private String name;
 
+    @Column(name = "account")
     private String account;
 
     public CauseOfAction(){

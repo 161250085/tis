@@ -44,9 +44,9 @@ public class MethodUtil {
 
     //插入方法，将最后一个大括号去掉，最后再换行补上大括号
     private static void insertMethod(String code, String path) throws Exception {
-      if(path!=null){
-          reWrite(path, code);
-      }
+        if(path!=null){
+            reWrite(path, code);
+        }
     }
 
     //得到代码里的方法声明

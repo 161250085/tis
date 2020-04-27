@@ -13,7 +13,12 @@ public interface InformationItemRepository extends JpaRepository<InformationItem
 
     List<InformationItem> findByAccount(String account);
 
-    @Query("select items from InformationItem items where items.id in (select item.infoId from COAInformationItem item where item.coaId =?1)" )
-    List<InformationItem> findInformationItemByCOAId(Integer coaId);
+    @Query("select new InformationItem(items.id, items.name) from InformationItem items")
+    List<InformationItem> findAllInformationItems();
 
+    @Query("select new InformationItem(items.id, items.name, items.account) from InformationItem items where items.id in (select item.infoId from COAInformationItem item where item.coaId =?1)" )
+    List<InformationItem> findInformationItemsByCOAId(Integer coaId);
+
+    @Query("select items from InformationItem items where items.id in (select item.infoId from COAInformationItem item where item.coaId =?1) and items.account = ?2" )
+    List<InformationItem> findInformationItemsWithCodeByCOAIdAndAccount(Integer coaId, String userAccount);
 }
