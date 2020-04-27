@@ -20,6 +20,8 @@ public class CauseOfAction implements Serializable {
     @Column(name = "account")
     private String account;
 
+    private String state;
+
     public CauseOfAction(){
     }
 
@@ -27,6 +29,7 @@ public class CauseOfAction implements Serializable {
         this.type = type.value;
         this.name = name;
         this.account = account;
+        this.state = StateType.UNDER_REVIEWED.value;
     }
 
     public Integer getId() {
@@ -53,12 +56,20 @@ public class CauseOfAction implements Serializable {
         this.name = name;
     }
 
-    public String getUser_id() {
+    public String getAccount() {
         return account;
     }
 
-    public void setUser_id(String account) {
+    public void setAccount(String account) {
         this.account = account;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(StateType state) {
+        this.state = state.value;
     }
 
     @Override
@@ -67,6 +78,7 @@ public class CauseOfAction implements Serializable {
                 "案由id=" + id +
                 "案由种类=" + type +
                 "案由名称=" + name +
-                "创建人=" + account +'}';
+                "创建人=" + account +
+                "案由状态="+state+'}';
     }
 }

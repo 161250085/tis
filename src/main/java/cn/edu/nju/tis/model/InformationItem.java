@@ -20,6 +20,8 @@ public class InformationItem implements Serializable {
     @Column(name = "user_id")
     private String account;
 
+    private String state;
+
     public InformationItem(){}
 
     public InformationItem(int id, String name){
@@ -37,6 +39,7 @@ public class InformationItem implements Serializable {
         this.name = name;
         this.code = code;
         this.account = account;
+        this.state = StateType.UNDER_REVIEWED.value;
     }
 
     public Integer getId() {
@@ -69,6 +72,14 @@ public class InformationItem implements Serializable {
 
     public void setAccount(String account) {
         this.account = account;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     @Override
