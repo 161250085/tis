@@ -33,7 +33,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     public String itemsExtraction(String coaName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
 
         CauseOfAction coa = coaRepository.findCauseOfActionByName(coaName);
-        List<InformationItem> informationItems = informationItemRepository.findInformationItemByCOAId(coa.getId());
+        List<InformationItem> informationItems = informationItemRepository.findInformationItemsByCOAId(coa.getId());
         List<ItemXML> itemXMLS = new ArrayList<>();
         switch (coa.getType()) {
             case "CIVIL":

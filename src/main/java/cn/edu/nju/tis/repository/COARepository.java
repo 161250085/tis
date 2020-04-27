@@ -1,6 +1,8 @@
 package cn.edu.nju.tis.repository;
 
 import cn.edu.nju.tis.model.CauseOfAction;
+import cn.edu.nju.tis.model.COAType;
+import cn.edu.nju.tis.vo.COAandInfoItemVO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
