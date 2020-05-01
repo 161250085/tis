@@ -1,8 +1,8 @@
-package cn.edu.nju.tis.controller;
+    package cn.edu.nju.tis.controller;
 
-import org.springframework.web.bind.annotation.*;
+    import org.springframework.web.bind.annotation.*;
 
-@RestController
-public class ManagerController {
+    @RestController
+    public class ManagerController {
 
-}
+    }
