@@ -78,8 +78,8 @@ public class InformationItem implements Serializable {
         return state;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setState(StateType type) {
+        this.state = type.value;
     }
 
     @Override
@@ -88,6 +88,7 @@ public class InformationItem implements Serializable {
                 "信息项id="+id+
                 "信息项名="+name+
                 "代码="+code+
-                "创建人"+account+'}';
+                "创建人"+account+
+                "状态"+'}';
     }
 }

@@ -1,9 +1,8 @@
 package cn.edu.nju.tis.repository;
 
 import cn.edu.nju.tis.model.CauseOfAction;
-import cn.edu.nju.tis.model.COAType;
-import cn.edu.nju.tis.vo.COAandInfoItemVO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -16,5 +15,7 @@ public interface COARepository extends JpaRepository<CauseOfAction, Integer> {
 
     List<CauseOfAction> findCauseOfActionByAccount(String account);
 
+    @Query("update CauseOfAction coa set coa = ?1 where coa.id = ?2")
+    void updateCauseOfActionById(CauseOfAction cause_of_action, Integer id);
 
 }

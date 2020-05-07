@@ -20,8 +20,6 @@ public class MethodUtil {
      * @Param [type, itemName, code]
      **/
     public  static void addMethod(String type, String code) throws Exception {
-        ChineseCharToEn chineseCharToEn = ChineseCharToEn.getInstance();
-        //这边不考虑信息项首字母重复情况
         String methodDeclaration = getMethodDeclaration(code);
         String localAddress = Objects.requireNonNull(Objects.requireNonNull(ClassUtils.getDefaultClassLoader()).getResource("")).getPath();
         int length = localAddress.length();
@@ -49,10 +47,12 @@ public class MethodUtil {
         }
     }
 
-    //得到代码里的方法声明
+    //得到代码里的方法声明(去掉前后空格)
     private static String getMethodDeclaration(String code) {
         int index = code.indexOf('{');
-        return code.substring(6,index);
+        String str = code.substring(0,index);
+        str = str.replace("public","");
+        return str.trim();
     }
 
     //换行之后再写
