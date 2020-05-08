@@ -2,6 +2,7 @@ package cn.edu.nju.tis.serviceImpl;
 
 import cn.edu.nju.tis.model.CauseOfAction;
 import cn.edu.nju.tis.model.InformationItem;
+import cn.edu.nju.tis.model.StateType;
 import cn.edu.nju.tis.repository.COARepository;
 import cn.edu.nju.tis.repository.InformationItemRepository;
 import cn.edu.nju.tis.service.CauseOfActionManageService;
@@ -35,7 +36,19 @@ public class CauseOfActionServiceManageImpl implements CauseOfActionManageServic
         List<COAandInfoItemVO> coaandInfoItemVOList = new ArrayList<>();
         for(CauseOfAction coa:coaList){
             List<InformationItem> informationItemList = informationItemRepository.findInformationItemsByCOAId(coa.getId());
-            COAandInfoItemVO coaandInfoItemVO = new COAandInfoItemVO(coa.getId(), coa.getType(), coa.getName(),informationItemList);
+            COAandInfoItemVO coaandInfoItemVO = new COAandInfoItemVO(coa.getId(), coa.getType(), coa.getName(), coa.getState(), coa.getAccount(), informationItemList);
+            coaandInfoItemVOList.add(coaandInfoItemVO);
+        }
+        return coaandInfoItemVOList;
+    }
+
+    @Override
+    public List<COAandInfoItemVO> findURCauseOfActionList() {
+        List<CauseOfAction> coaList = coaRepository.findCauseOfActionByState(StateType.UNDER_REVIEWED.value);
+        List<COAandInfoItemVO> coaandInfoItemVOList = new ArrayList<>();
+        for(CauseOfAction coa:coaList){
+            List<InformationItem> informationItemList = informationItemRepository.findInformationItemsByCOAId(coa.getId());
+            COAandInfoItemVO coaandInfoItemVO = new COAandInfoItemVO(coa.getId(), coa.getType(), coa.getName(), coa.getState(), coa.getAccount(), informationItemList);
             coaandInfoItemVOList.add(coaandInfoItemVO);
         }
         return coaandInfoItemVOList;

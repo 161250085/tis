@@ -401,4 +401,125 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
         return result;
     }
 
+    @Override
+    public String XGBH(Document document) {
+        Element root = document.getRootElement();
+        String result ="否";
+        int flagq = 0;
+        int flagh = 0;
+        if(root.attribute("value")!=null){
+            String qwStr = root.attributeValue("value");
+            String[] qwStrarray = qwStr.split("[，。]");
+            for(String qw:qwStrarray){
+                if((qw.contains("性格")&&(qw.contains("不和")||qw.contains("不合")||
+                        qw.contains("差异")||qw.contains("不同")||qw.contains("不投")))&&
+                        (qw.contains("矛盾")||qw.contains("争执")||
+                                qw.contains("不睦")||qw.contains("不和")||
+                                qw.contains("争吵")||qw.contains("殴打")||qw.contains("虐待")||
+                                qw.contains("暴力")||qw.contains("吵打")||qw.contains("打骂") )){
+                    flagq =1;
+                }
+                if(((qw.contains("难以")||qw.contains("无法")||qw.contains("不能"))&&(qw.contains("共同生活")||qw.contains("与被告生活")||qw.contains("与原告生活")))){
+                    flagh =1;
+                }
+            }
+            if(flagq*flagh==1){
+                result = "是";
+            }
+        }
+        if(flagq+flagh == 0){
+            return "未提及";
+        }
+        return result;
+    }
+
+    @Override
+    public String SFCZJTBLNDYQJTCY(Document document) {
+        Element root = document.getRootElement();
+        String result ="否";
+        int fnull = 0;
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode = root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                Element cmssdNode = ajjbqkNode.element("CMSSD");
+                if(cmssdNode.attribute("value")!=null){
+                    String qwStr = cmssdNode.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("[，。]");
+                    for(String qw:qwStrarray){
+                        if(( qw.contains("殴打")||qw.contains("虐待")|| qw.contains("暴力")||
+                                qw.contains("抛弃")||qw.contains("遗弃")||qw.contains("动手"))){
+                            fnull = 1;
+                            if(( qw.contains("殴打")||qw.contains("虐待")|| qw.contains("暴力")||
+                                    qw.contains("抛弃")||qw.contains("遗弃")||qw.contains("动手"))&&
+                                    (!qw.contains("并未")||!qw.contains("没有")||!qw.contains("从未"))){
+                                result = "是";
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
+        if(fnull == 0){
+            return "未提及";
+        }
+        return result;
+    }
+
+    @Override
+    public String SFCZYFHSFDSRYHWQ(Document document) {
+        Element root = document.getRootElement();
+        String result ="否";
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode = root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                Element cmssdNode = ajjbqkNode.element("CMSSD");
+                if(cmssdNode.attribute("value")!=null){
+                    String qwStr = cmssdNode.attributeValue("value");
+                    System.out.println(qwStr);
+                    String[] qwStrarray = qwStr.split("[，。]");
+                    for(String qw:qwStrarray){
+                        if(qw.contains("婚外情")||qw.contains("第三者")||
+                                qw.contains("出轨")||qw.contains("同居")||
+                                qw.contains("暧昧")||qw.contains("不正当关系")){
+                            result = "是";
+                            break;
+                        }
+                    }
+
+                }
+
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public String SFCZYFHSFDSRYDBXDDEXDQX(Document document) {
+        Element root = document.getRootElement();
+        String result ="否";
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode = root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                Element cmssdNode = ajjbqkNode.element("CMSSD");
+                if(cmssdNode.attribute("value")!=null){
+                    String qwStr = cmssdNode.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("[，。]");
+                    for(String qw:qwStrarray){
+                        if(qw.contains("赌博")||qw.contains("吸毒")||qw.contains("酗酒")||qw.contains("恶习")
+                        ){
+                            result = "是";
+                            break;
+                        }
+                    }
+
+                }
+
+            }
+        }
+        return result;
+    }
+
+
 }

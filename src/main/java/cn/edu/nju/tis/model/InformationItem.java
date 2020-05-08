@@ -24,6 +24,10 @@ public class InformationItem implements Serializable {
 
     public InformationItem(){}
 
+    public InformationItem(int id){
+        this.id = id;
+    }
+
     public InformationItem(int id, String name){
         this.id = id;
         this.name = name;
@@ -41,6 +45,15 @@ public class InformationItem implements Serializable {
         this.account = account;
         this.state = StateType.UNDER_REVIEWED.value;
     }
+
+    public InformationItem(int id, String name, String code, String account){
+        this.id = id;
+        this.name = name;
+        this.code = code;
+        this.account = account;
+        this.state = StateType.UNDER_REVIEWED.value;
+    }
+
 
     public Integer getId() {
         return id;
