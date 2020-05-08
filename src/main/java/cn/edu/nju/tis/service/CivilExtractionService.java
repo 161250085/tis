@@ -4,11 +4,11 @@ import org.dom4j.Document;
 
 public interface CivilExtractionService {
     /**
+     * @return
      * @Author cruck
      * @Description //测试方法，抽取离婚纠纷的要素表信息项
      * @Date 16:17 2020/4/28
      * @Param
-     * @return
      **/
     //1.相识时间
     String XSSJ(Document document);
@@ -54,4 +54,17 @@ public interface CivilExtractionService {
 
     //15.是否存在婚前缺乏了解，草率结婚，婚后未建立起夫妻感情，难以共同生活的情形
     String CZKZYHBZYJCHYQK(Document document);
+
+    //16.是否存在性格不合，经常发生矛盾，难以共同生活的情形
+    String XGBH(Document document);
+
+    //17.是否存在家庭暴力或虐待、遗弃家庭成员的情形
+    String SFCZJTBLNDYQJTCY(Document document);
+
+    //18.是否存在一方或双方当事人有婚外情、与他人同居等情形
+    String SFCZYFHSFDSRYHWQ(Document document);
+
+    //19.是否存在一方或双方当事人有赌博、吸毒等恶习的情形
+    String SFCZYFHSFDSRYDBXDDEXDQX(Document document);
+
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface CauseOfActionManageService {
     List<COAandInfoItemVO> findCOAByUserAccount(String userAccount);
+    List<COAandInfoItemVO> findURCauseOfActionList();
     InformationItem findInfoItemByInfoItemId(Integer informationItemId);
     List<InformationItem> findInfoItemsByCOAIdAndAccount(Integer coaId, String userAccount);
 }

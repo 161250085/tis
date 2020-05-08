@@ -1,6 +1,7 @@
 package cn.edu.nju.tis.serviceImpl;
 
 import cn.edu.nju.tis.model.InformationItem;
+import cn.edu.nju.tis.model.StateType;
 import cn.edu.nju.tis.repository.InformationItemRepository;
 import cn.edu.nju.tis.service.InfoItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class InfoItemServiceImpl implements InfoItemService {
     private InformationItemRepository informationItemRepository;
 
     @Override
-    public List<InformationItem> findAllInformationItems() {
-        return  informationItemRepository.findAllInformationItems();
+    public List<InformationItem> findRegisteredInformationItems() {
+        return informationItemRepository.findByState(StateType.REGISTERED.value);
     }
 }

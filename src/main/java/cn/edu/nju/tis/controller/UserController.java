@@ -6,10 +6,11 @@ import cn.edu.nju.tis.model.User;
 import cn.edu.nju.tis.service.COAService;
 import cn.edu.nju.tis.service.CauseOfActionManageService;
 import cn.edu.nju.tis.service.InfoItemService;
-import cn.edu.nju.tis.service.LoginService;
+import cn.edu.nju.tis.service.UserService;
 import cn.edu.nju.tis.utils.ResultMessageUtil;
 import cn.edu.nju.tis.vo.COAandInfoItemVO;
 import cn.edu.nju.tis.vo.CauseOfActionVO;
+import cn.edu.nju.tis.vo.ModifiedCauseOfActionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @RequestMapping(value = "/user")
 public class UserController {
     @Autowired
-    private LoginService loginService;
+    private UserService userService;
 
     @Autowired
     private CauseOfActionManageService causeOfActionManageService;
@@ -33,11 +34,21 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ResultMessageBean<Object> login(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password){
-        if(loginService.findByUsernameAndPassword(username,password)!=null){
-            User userLogin = loginService.findByUsernameAndPassword(username,password);
+        if(userService.findByUsernameAndPassword(username,password)!=null){
+            User userLogin = userService.findByUsernameAndPassword(username,password);
             return ResultMessageUtil.success(userLogin);
         }else{
             return ResultMessageUtil.error(1,"用户名或密码错误,登录失败");
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public ResultMessageBean<Object> register(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password){
+        try{
+            return userService.addUser(username,password);
+        }catch (Exception e) {
+            return ResultMessageUtil.error(-1, "注册失败");
         }
     }
 
@@ -49,9 +60,9 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getExistedInfoItems", method = RequestMethod.GET)
-    public ResultMessageBean getExistedInfoItems(){
-        List<InformationItem> infoItemList = infoItemService.findAllInformationItems();
+    @RequestMapping(value = "/getRegisteredInfoItems", method = RequestMethod.GET)
+    public ResultMessageBean getRegisteredInfoItems(){
+        List<InformationItem> infoItemList = infoItemService.findRegisteredInformationItems();
         return ResultMessageUtil.success(infoItemList);
     }
 
@@ -59,16 +70,16 @@ public class UserController {
     @RequestMapping(value = "/addCauseOfAction", method = RequestMethod.POST)
     public ResultMessageBean addCauseOfAction(@RequestBody CauseOfActionVO causeOfActionVO){
         try{
-            System.out.println(causeOfActionVO.getType());
-            System.out.println(causeOfActionVO.getCoaName());
-            System.out.println(causeOfActionVO.getUserAccount());
-            System.out.println(causeOfActionVO.getItemAndCode());
-            System.out.println(causeOfActionVO.getExistedItem());
             return coaService.addCOA(causeOfActionVO.getType(), causeOfActionVO.getCoaName(), causeOfActionVO.getUserAccount(), causeOfActionVO.getItemAndCode(), causeOfActionVO.getExistedItem());
         }catch (Exception e) {
-            System.out.println(e.fillInStackTrace());
             return ResultMessageUtil.error(-1,"案由添加失败");
         }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/modifyCauseOfAction", method = RequestMethod.POST)
+    public ResultMessageBean modifyCauseOfAction(@RequestBody ModifiedCauseOfActionVO modifiedCauseOfActionVO){
+        return coaService.modifyCOA(modifiedCauseOfActionVO.getAccount(), modifiedCauseOfActionVO.getCoaId(), modifiedCauseOfActionVO.getType(), modifiedCauseOfActionVO.getCoaName(), modifiedCauseOfActionVO.getItems(), modifiedCauseOfActionVO.getExistedItems());
     }
 
     @ResponseBody
@@ -84,6 +95,5 @@ public class UserController {
         List<InformationItem> infoItemListWithCode = causeOfActionManageService.findInfoItemsByCOAIdAndAccount(coaId, userAccount);
         return ResultMessageUtil.success(infoItemListWithCode);
     }
-
 
 }
