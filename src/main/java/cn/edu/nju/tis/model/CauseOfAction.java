@@ -32,6 +32,14 @@ public class CauseOfAction implements Serializable {
         this.state = StateType.UNDER_REVIEWED.value;
     }
 
+    public CauseOfAction(Integer id, COAType type, String name, String account, String state) {
+        this.id = id;
+        this.type = type.value;
+        this.name = name;
+        this.account = account;
+        this.state = state;
+    }
+
     public Integer getId() {
         return id;
     }

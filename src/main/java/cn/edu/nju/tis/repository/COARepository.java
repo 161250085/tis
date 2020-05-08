@@ -18,4 +18,5 @@ public interface COARepository extends JpaRepository<CauseOfAction, Integer> {
     @Query("update CauseOfAction coa set coa = ?1 where coa.id = ?2")
     void updateCauseOfActionById(CauseOfAction cause_of_action, Integer id);
 
+
 }

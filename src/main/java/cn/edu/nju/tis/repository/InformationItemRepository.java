@@ -24,4 +24,5 @@ public interface InformationItemRepository extends JpaRepository<InformationItem
 
     @Query("update InformationItem item set item = ?1 where item.id = ?2")
     void updateItemById(InformationItem item, Integer id);
+
 }
