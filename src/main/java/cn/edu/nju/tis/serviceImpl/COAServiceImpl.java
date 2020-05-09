@@ -31,14 +31,19 @@ public class COAServiceImpl implements COAService {
     public ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, ConcurrentHashMap<String, String> itemAndCode, List<String> existedItem) throws Exception {
         //如果案由存在直接返回失败
         if(coaRepository.findCauseOfActionByName(coaName)!=null){
-            return ResultMessageUtil.error(-1,"案由已存在");
+            return ResultMessageUtil.error(-1,"同名案由已存在");
         }
-        //如果信息项存在同名，也直接返回失败
+        //如果信息项存在同名，也直接返回失败；信息项列表本身不能有重名
+        Set<String> set = new HashSet<>();
         for(Map.Entry<String, String> entry: itemAndCode.entrySet() ){
+            if(!set.add(entry.getKey())){
+                return ResultMessageUtil.error(-1, "同名信息项已存在");
+            }
             if(informationItemRepository.findByName(entry.getKey())!=null){
                 return ResultMessageUtil.error(-1,"\""+entry.getKey()+"\""+"已存在");
             }
         }
+
         //否则先进行数据库操作
         switch (type) {
             case "CIVIL":
