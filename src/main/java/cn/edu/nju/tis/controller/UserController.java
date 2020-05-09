@@ -78,7 +78,7 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(value = "/modifyCauseOfAction", method = RequestMethod.POST)
-    public ResultMessageBean modifyCauseOfAction(@RequestBody ModifiedCauseOfActionVO modifiedCauseOfActionVO){
+    public ResultMessageBean modifyCauseOfAction(@RequestBody ModifiedCauseOfActionVO modifiedCauseOfActionVO) throws InterruptedException {
         return coaService.modifyCOA(modifiedCauseOfActionVO.getAccount(), modifiedCauseOfActionVO.getCoaId(), modifiedCauseOfActionVO.getType(), modifiedCauseOfActionVO.getCoaName(), modifiedCauseOfActionVO.getItems(), modifiedCauseOfActionVO.getExistedItems());
     }
 

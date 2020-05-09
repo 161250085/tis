@@ -46,14 +46,6 @@ public class InformationItem implements Serializable {
         this.state = StateType.UNDER_REVIEWED.value;
     }
 
-    public InformationItem(int id, String name, String code, String account){
-        this.id = id;
-        this.name = name;
-        this.code = code;
-        this.account = account;
-        this.state = StateType.UNDER_REVIEWED.value;
-    }
-
 
     public Integer getId() {
         return id;

@@ -11,8 +11,10 @@ import cn.edu.nju.tis.utils.ResultMessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -30,6 +32,12 @@ public class COAServiceImpl implements COAService {
         //如果案由存在直接返回失败
         if(coaRepository.findCauseOfActionByName(coaName)!=null){
             return ResultMessageUtil.error(-1,"案由已存在");
+        }
+        //如果信息项存在同名，也直接返回失败
+        for(Map.Entry<String, String> entry: itemAndCode.entrySet() ){
+            if(informationItemRepository.findByName(entry.getKey())!=null){
+                return ResultMessageUtil.error(-1,"\""+entry.getKey()+"\""+"已存在");
+            }
         }
         //否则先进行数据库操作
         switch (type) {
@@ -63,9 +71,25 @@ public class COAServiceImpl implements COAService {
     @Override
     public ResultMessageBean<Object> modifyCOA(String userAccount,Integer coaId, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems) {
         CauseOfAction coa = coaRepository.findCauseOfActionById(coaId);
+        if(coaRepository.findCauseOfActionByName(coaName)!=null){
+            return ResultMessageUtil.error(-1,"同名案由已存在");
+        }
         if (coa.getState().equals(StateType.REGISTERED.value)) {
             return ResultMessageUtil.error(-1, "案由已注册，无法修改");
         }
+
+        //再测试一下信息项是否已经已经存在，如果已经存在直接返回错误
+        //同时测试一下新的信息项有没有重复的
+        Set<String> set = new HashSet<>();
+        for(InformationItem informationItem: items){
+            if(!set.add(informationItem.getName())){
+            return ResultMessageUtil.error(-1,"请不要添加同名信息项");
+            }
+            if(informationItemRepository.findByName(informationItem.getName())!=null){
+                return ResultMessageUtil.error(-1,"\""+informationItem.getName()+"\""+"已存在");
+            }
+        }
+
         //如果是待审批或者审批不通过的可以先删除后写入
         //首先找到案由自己单独的item,并且删掉信息对应信息项记录
         List<COAInformationItem> coaInformationItems = coaInformationItemRepository.findOwnByCoaId(coa.getId());
@@ -75,37 +99,37 @@ public class COAServiceImpl implements COAService {
 
         //之后再删掉对应的案由记录，因为用了强制外键，信息项-案由连接表对应记录也一并删除
         coaRepository.deleteById(coa.getId());
-
         //然后把修改好的依次再插进去
         switch (type) {
             case "CIVIL":
-                coaRepository.save(new CauseOfAction(coaId, COAType.CIVIL, coaName, userAccount, coa.getState()));
+                coaRepository.save(new CauseOfAction(COAType.CIVIL, coaName, userAccount));
                 break;
             case "ADMINISTRATIVE":
-                coaRepository.save(new CauseOfAction(coaId, COAType.ADMINISTRATIVE, coaName, userAccount, coa.getState()));
+                coaRepository.save(new CauseOfAction(COAType.ADMINISTRATIVE, coaName, userAccount));
                 break;
             case "CRIMINAL":
-                coaRepository.save(new CauseOfAction(coaId, COAType.CRIMINAL, coaName, userAccount, coa.getState()));
+                coaRepository.save(new CauseOfAction(COAType.CRIMINAL, coaName, userAccount));
                 break;
             default:
                 return ResultMessageUtil.error(-1, "案由类别错误");
 
         }
+        Integer coa_id = coaRepository.findCauseOfActionByName(coaName).getId();
         //然后插入新建的信息项，同时创建案由信息项连接表
         for (InformationItem item : items) {
             informationItemRepository.save(item);
-            coaInformationItemRepository.save(new COAInformationItem(informationItemRepository.findByName(item.getName()).getId(), coaId));
+            coaInformationItemRepository.save(new COAInformationItem(informationItemRepository.findByName(item.getName()).getId(), coa_id));
         }
 
         //最后再次建立已有信息项和案由的连接表
         for (InformationItem item : existedItems) {
-            coaInformationItemRepository.save(new COAInformationItem(item.getId(), coaId));
+            coaInformationItemRepository.save(new COAInformationItem(item.getId(), coa_id));
         }
 
         return ResultMessageUtil.success();
     }
 
-    //完成两件事：1、将案由和对应的信息项状态改成已审批 2、将代码插入
+    //插入代码
     @Override
     public ResultMessageBean<Object> passCOA(Integer coaId) throws Exception {
         //如果案由不存在直接返回失败
