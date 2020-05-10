@@ -107,13 +107,13 @@ public class COAServiceImpl implements COAService {
         //然后把修改好的依次再插进去
         switch (type) {
             case "CIVIL":
-                coaRepository.save(new CauseOfAction(COAType.CIVIL, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(coaId, COAType.CIVIL, coaName, userAccount));
                 break;
             case "ADMINISTRATIVE":
-                coaRepository.save(new CauseOfAction(COAType.ADMINISTRATIVE, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(coaId, COAType.ADMINISTRATIVE, coaName, userAccount));
                 break;
             case "CRIMINAL":
-                coaRepository.save(new CauseOfAction(COAType.CRIMINAL, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(coaId, COAType.CRIMINAL, coaName, userAccount));
                 break;
             default:
                 return ResultMessageUtil.error(-1, "案由类别错误");
