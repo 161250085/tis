@@ -1,5 +1,7 @@
 package cn.edu.nju.tis.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -8,7 +10,8 @@ import java.io.Serializable;
 public class CauseOfAction implements Serializable {
     @Id
     @Column(name = "coa_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "id")
+    @GenericGenerator(name = "id", strategy = "cn.edu.nju.tis.utils.ManulInsertGenerator")
     private Integer id;
 
     @Column(name = "coa_type")
@@ -32,6 +35,13 @@ public class CauseOfAction implements Serializable {
         this.state = StateType.UNDER_REVIEWED.value;
     }
 
+    public CauseOfAction(Integer id, COAType type, String name, String account){
+        this.id = id;
+        this.type = type.value;
+        this.name = name;
+        this.account = account;
+        this.state = StateType.UNDER_REVIEWED.value;
+    }
 
     public Integer getId() {
         return id;
