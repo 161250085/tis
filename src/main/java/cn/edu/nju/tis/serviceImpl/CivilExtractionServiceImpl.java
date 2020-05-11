@@ -521,5 +521,4 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
         return result;
     }
 
-
 }

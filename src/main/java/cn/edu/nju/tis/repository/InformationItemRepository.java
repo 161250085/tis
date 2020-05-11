@@ -17,10 +17,12 @@ public interface InformationItemRepository extends JpaRepository<InformationItem
 
     List<InformationItem> findByState(String state);
 
+    List<InformationItem> findByCoaId(Integer coaId);
+
     @Query("select new InformationItem(items.id, items.name) from InformationItem items")
     List<InformationItem> findAllInformationItems();
 
-    @Query("select new InformationItem(items.id, items.name, items.account) from InformationItem items where items.id in (select item.infoId from COAInformationItem item where item.coaId =?1)" )
+    @Query("select new InformationItem(items.id, items.name, items.account, items.coaId) from InformationItem items where items.id in (select item.infoId from COAInformationItem item where item.coaId =?1)" )
     List<InformationItem> findInformationItemsByCOAId(Integer coaId);
 
     @Query("select items from InformationItem items where items.id in (select item.infoId from COAInformationItem item where item.coaId =?1) and items.account = ?2" )

@@ -66,5 +66,4 @@ public interface CivilExtractionService {
 
     //19.是否存在一方或双方当事人有赌博、吸毒等恶习的情形
     String SFCZYFHSFDSRYDBXDDEXDQX(Document document);
-
 }

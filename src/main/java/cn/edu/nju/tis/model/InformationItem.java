@@ -1,7 +1,5 @@
 package cn.edu.nju.tis.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -9,9 +7,8 @@ import java.io.Serializable;
 @Table(name = "info_items")
 public class InformationItem implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "id")
-    @GenericGenerator(name = "id", strategy = "cn.edu.nju.tis.utils.ManulInsertGenerator")
     @Column(name = "info_item_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "info_item_name")
@@ -28,6 +25,7 @@ public class InformationItem implements Serializable {
 
     private String state;
 
+    public InformationItem(){ }
 
     public InformationItem(int id){
         this.id = id;
@@ -42,6 +40,13 @@ public class InformationItem implements Serializable {
         this.id = id;
         this.name = name;
         this.account = account;
+    }
+
+    public InformationItem(int id, String name, String account, Integer coaId){
+        this.id = id;
+        this.name = name;
+        this.account = account;
+        this.coaId = coaId;
     }
 
     public InformationItem(String name, String code, String account){

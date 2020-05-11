@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface InfoItemService {
     List<InformationItem> findRegisteredInformationItems();
+    List<InformationItem> findInfoItemsByCOAId(Integer coaId);
 }

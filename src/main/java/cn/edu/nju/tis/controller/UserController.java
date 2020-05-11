@@ -91,8 +91,8 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(value = "/getInfoItemListWithCode", method = RequestMethod.GET)
-    public ResultMessageBean getInfoItemListWithCode(@RequestParam(value = "coaId") Integer coaId, @RequestParam(value = "userAccount") String userAccount){
-        List<InformationItem> infoItemListWithCode = causeOfActionManageService.findInfoItemsByCOAIdAndAccount(coaId, userAccount);
+    public ResultMessageBean getInfoItemListWithCode(@RequestParam(value = "coaId") Integer coaId){
+        List<InformationItem> infoItemListWithCode = infoItemService.findInfoItemsByCOAId(coaId);
         return ResultMessageUtil.success(infoItemListWithCode);
     }
 

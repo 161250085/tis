@@ -36,7 +36,7 @@ public class CauseOfActionServiceManageImpl implements CauseOfActionManageServic
         List<COAandInfoItemVO> coaandInfoItemVOList = new ArrayList<>();
         for(CauseOfAction coa:coaList){
             List<InformationItem> informationItemList = informationItemRepository.findInformationItemsByCOAId(coa.getId());
-            COAandInfoItemVO coaandInfoItemVO = new COAandInfoItemVO(coa.getId(), coa.getType(), coa.getName(), coa.getState(), coa.getAccount(), informationItemList);
+            COAandInfoItemVO coaandInfoItemVO = new COAandInfoItemVO(coa.getId(), coa.getType(), coa.getName(), coa.getState(), coa.getAccount(), coa.getImportPackages(), informationItemList);
             coaandInfoItemVOList.add(coaandInfoItemVO);
         }
         return coaandInfoItemVOList;
@@ -48,7 +48,7 @@ public class CauseOfActionServiceManageImpl implements CauseOfActionManageServic
         List<COAandInfoItemVO> coaandInfoItemVOList = new ArrayList<>();
         for(CauseOfAction coa:coaList){
             List<InformationItem> informationItemList = informationItemRepository.findInformationItemsByCOAId(coa.getId());
-            COAandInfoItemVO coaandInfoItemVO = new COAandInfoItemVO(coa.getId(), coa.getType(), coa.getName(), coa.getState(), coa.getAccount(), informationItemList);
+            COAandInfoItemVO coaandInfoItemVO = new COAandInfoItemVO(coa.getId(), coa.getType(), coa.getName(), coa.getState(), coa.getAccount(), coa.getImportPackages(), informationItemList);
             coaandInfoItemVOList.add(coaandInfoItemVO);
         }
         return coaandInfoItemVOList;
