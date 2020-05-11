@@ -74,30 +74,41 @@ public class COAServiceImpl implements COAService {
     }
 
     @Override
-    public ResultMessageBean<Object> modifyCOA(String userAccount,Integer coaId, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems) {
+    public ResultMessageBean<Object> modifyCOA(String userAccount,Integer coaId, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems){
         CauseOfAction coa = coaRepository.findCauseOfActionById(coaId);
-        if(coaRepository.findCauseOfActionByName(coaName)!=null){
+        if(coaRepository.findCauseOfActionByName(coaName)!=null&&!coaRepository.findCauseOfActionByName(coaName).getId().equals(coaId)){
             return ResultMessageUtil.error(-1,"同名案由已存在");
         }
         if (coa.getState().equals(StateType.REGISTERED.value)) {
             return ResultMessageUtil.error(-1, "案由已注册，无法修改");
         }
 
-        //再测试一下信息项是否已经已经存在，如果已经存在直接返回错误
-        //同时测试一下新的信息项有没有重复的
+        //测试一下新的信息项有没有重复的
         Set<String> set = new HashSet<>();
         for(InformationItem informationItem: items){
             if(!set.add(informationItem.getName())){
             return ResultMessageUtil.error(-1,"请不要添加同名信息项");
             }
-            if(informationItemRepository.findByName(informationItem.getName())!=null){
-                return ResultMessageUtil.error(-1,"\""+informationItem.getName()+"\""+"已存在");
+        }
+
+        //得到除了自己独有信息项意外以外的信息项
+        List<InformationItem> informationItems = informationItemRepository.findAll();
+        List<COAInformationItem> coaInformationItems = coaInformationItemRepository.findOwnByCoaId(coa.getId());
+        for(COAInformationItem coaInformationItem:coaInformationItems){
+            informationItems.removeIf(informationItem -> informationItem.getId().equals(coaInformationItem.getInfoId()));
+        }
+
+        //测一下新的信息项有没有已经存在的
+        for(InformationItem informationItem:items){
+            for(InformationItem informationItem1:informationItems){
+                if(informationItem1.getName().equals(informationItem.getName())){
+                    return ResultMessageUtil.error(-1,"\""+informationItem.getName()+"\"已存在");
+                }
             }
         }
 
         //如果是待审批或者审批不通过的可以先删除后写入
         //首先找到案由自己单独的item,并且删掉信息对应信息项记录
-        List<COAInformationItem> coaInformationItems = coaInformationItemRepository.findOwnByCoaId(coa.getId());
         for (COAInformationItem coaInformationItem : coaInformationItems) {
             informationItemRepository.deleteById(coaInformationItem.getInfoId());
         }
@@ -119,18 +130,20 @@ public class COAServiceImpl implements COAService {
                 return ResultMessageUtil.error(-1, "案由类别错误");
 
         }
-        Integer coa_id = coaRepository.findCauseOfActionByName(coaName).getId();
-        //然后插入新建的信息项，同时创建案由信息项连接表
-        for (InformationItem item : items) {
-            informationItemRepository.save(item);
-            coaInformationItemRepository.save(new COAInformationItem(informationItemRepository.findByName(item.getName()).getId(), coa_id));
-        }
 
         //最后再次建立已有信息项和案由的连接表
         for (InformationItem item : existedItems) {
-            coaInformationItemRepository.save(new COAInformationItem(item.getId(), coa_id));
+            coaInformationItemRepository.save(new COAInformationItem(item.getId(), coaId));
         }
 
+
+        //然后插入新建的信息项，同时创建案由信息项连接表
+        for (InformationItem item : items) {
+            InformationItem in=informationItemRepository.save(item);
+            coaInformationItemRepository.save(new COAInformationItem(in.getId(),coaId));
+            coaInformationItemRepository.save(new COAInformationItem(4,1));
+            coaInformationItemRepository.save(new COAInformationItem(17,1));
+        }
         return ResultMessageUtil.success();
     }
 

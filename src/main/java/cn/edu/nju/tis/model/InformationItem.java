@@ -103,7 +103,7 @@ public class InformationItem implements Serializable {
                 "信息项id="+id+
                 "信息项名="+name+
                 "代码="+code+
-                "创建人"+account+
-                "状态"+'}';
+                "创建人="+account+
+                "状态="+state+'}';
     }
 }
