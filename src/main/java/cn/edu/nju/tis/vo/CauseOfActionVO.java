@@ -16,15 +16,17 @@ public class CauseOfActionVO {
     String userAccount;
     ConcurrentHashMap<String,String> itemAndCode;
     List<String> existedItem;
+    String importPackages;
 
     public CauseOfActionVO(){}
 
-    public CauseOfActionVO(String type, String coaName, String userAccount, ConcurrentHashMap<String, String> itemAndCode, List<String> existedItem) {
+    public CauseOfActionVO(String type, String coaName, String userAccount, ConcurrentHashMap<String, String> itemAndCode, List<String> existedItem, String importPackages) {
         this.type = type;
         this.coaName = coaName;
         this.userAccount = userAccount;
         this.itemAndCode = itemAndCode;
         this.existedItem = existedItem;
+        this.importPackages = importPackages;
     }
 
     public String getType() {
@@ -65,5 +67,13 @@ public class CauseOfActionVO {
 
     public void setExistedItem(List<String> existedItem) {
         this.existedItem = existedItem;
+    }
+
+    public String getImportPackages() {
+        return importPackages;
+    }
+
+    public void setImportPackages(String importPackages) {
+        this.importPackages = importPackages;
     }
 }

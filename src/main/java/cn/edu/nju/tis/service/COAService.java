@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public interface COAService {
-    ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, ConcurrentHashMap<String,String> itemAndCode, List<String> existedItem) throws Exception;
+    ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, String importPackages,ConcurrentHashMap<String,String> itemAndCode, List<String> existedItem) throws Exception;
 
-    ResultMessageBean<Object> modifyCOA(String userAccount,Integer coaId, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems);
+    ResultMessageBean<Object> modifyCOA(String userAccount,Integer coaId, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems,String importPackages);
 
     ResultMessageBean<Object> passCOA(Integer coaId) throws Exception;
 

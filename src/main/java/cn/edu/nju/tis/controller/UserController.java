@@ -70,7 +70,7 @@ public class UserController {
     @RequestMapping(value = "/addCauseOfAction", method = RequestMethod.POST)
     public ResultMessageBean addCauseOfAction(@RequestBody CauseOfActionVO causeOfActionVO){
         try{
-            return coaService.addCOA(causeOfActionVO.getType(), causeOfActionVO.getCoaName(), causeOfActionVO.getUserAccount(), causeOfActionVO.getItemAndCode(), causeOfActionVO.getExistedItem());
+            return coaService.addCOA(causeOfActionVO.getType(), causeOfActionVO.getCoaName(), causeOfActionVO.getUserAccount(), causeOfActionVO.getImportPackages(),causeOfActionVO.getItemAndCode(), causeOfActionVO.getExistedItem());
         }catch (Exception e) {
             return ResultMessageUtil.error(-1,"案由添加失败");
         }
@@ -79,7 +79,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/modifyCauseOfAction", method = RequestMethod.POST)
     public ResultMessageBean modifyCauseOfAction(@RequestBody ModifiedCauseOfActionVO modifiedCauseOfActionVO) throws InterruptedException {
-        return coaService.modifyCOA(modifiedCauseOfActionVO.getAccount(), modifiedCauseOfActionVO.getCoaId(), modifiedCauseOfActionVO.getType(), modifiedCauseOfActionVO.getCoaName(), modifiedCauseOfActionVO.getItems(), modifiedCauseOfActionVO.getExistedItems());
+        return coaService.modifyCOA(modifiedCauseOfActionVO.getAccount(), modifiedCauseOfActionVO.getCoaId(), modifiedCauseOfActionVO.getType(), modifiedCauseOfActionVO.getCoaName(), modifiedCauseOfActionVO.getItems(), modifiedCauseOfActionVO.getExistedItems(), modifiedCauseOfActionVO.getImportPackages());
     }
 
     @ResponseBody

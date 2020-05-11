@@ -23,9 +23,11 @@ public class InformationItem implements Serializable {
     @Column(name = "user_id")
     private String account;
 
+    @Column(name = "coa_id")
+    private Integer coaId;
+
     private String state;
 
-    public InformationItem(){}
 
     public InformationItem(int id){
         this.id = id;
@@ -54,6 +56,14 @@ public class InformationItem implements Serializable {
         this.name = name;
         this.code = code;
         this.account = account;
+        this.state = StateType.UNDER_REVIEWED.value;
+    }
+
+    public InformationItem(String name, String code, String account, Integer coaId) {
+        this.name = name;
+        this.code = code;
+        this.account = account;
+        this.coaId = coaId;
         this.state = StateType.UNDER_REVIEWED.value;
     }
 
@@ -95,6 +105,14 @@ public class InformationItem implements Serializable {
 
     public void setState(StateType type) {
         this.state = type.value;
+    }
+
+    public Integer getCoaId() {
+        return coaId;
+    }
+
+    public void setCoaId(Integer coaId) {
+        this.coaId = coaId;
     }
 
     @Override

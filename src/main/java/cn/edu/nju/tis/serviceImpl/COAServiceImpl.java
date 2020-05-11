@@ -27,8 +27,10 @@ public class COAServiceImpl implements COAService {
     COAInformationItemRepository coaInformationItemRepository;
     //进行两个操作：1、新建案由记录和新增信息项记录（记录状态默认是未审核）
     //2、然后将已有的信息项和新建的案由连接起来
+
+    //新的信息项得加上coa_id
     @Override
-    public ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, ConcurrentHashMap<String, String> itemAndCode, List<String> existedItem) throws Exception {
+    public ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, String importPackages,ConcurrentHashMap<String, String> itemAndCode, List<String> existedItem){
         //如果案由存在直接返回失败
         if(coaRepository.findCauseOfActionByName(coaName)!=null){
             return ResultMessageUtil.error(-1,"同名案由已存在");
@@ -47,13 +49,13 @@ public class COAServiceImpl implements COAService {
         //否则先进行数据库操作
         switch (type) {
             case "CIVIL":
-                coaRepository.save(new CauseOfAction(COAType.CIVIL, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(COAType.CIVIL, coaName, userAccount, importPackages));
                 break;
             case "ADMINISTRATIVE":
-                coaRepository.save(new CauseOfAction(COAType.ADMINISTRATIVE, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(COAType.ADMINISTRATIVE, coaName, userAccount, importPackages));
                 break;
             case "CRIMINAL":
-                coaRepository.save(new CauseOfAction(COAType.CRIMINAL, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(COAType.CRIMINAL, coaName, userAccount, importPackages));
                 break;
             default:
                 return ResultMessageUtil.error(-1,"案由类别错误");
@@ -62,7 +64,7 @@ public class COAServiceImpl implements COAService {
         Integer coaId = causeOfAction.getId();
         //接下来存储item，同时存储item-coaId数据库
         for(Map.Entry<String, String> entry: itemAndCode.entrySet() ){
-            informationItemRepository.save(new InformationItem(entry.getKey(),entry.getValue(),userAccount));
+            informationItemRepository.save(new InformationItem(entry.getKey(),entry.getValue(),userAccount,coaId));
             coaInformationItemRepository.save(new COAInformationItem(informationItemRepository.findByName(entry.getKey()).getId(),coaId));
         }
         //最后将已有的item和coa联系起来，加入数据库
@@ -74,7 +76,7 @@ public class COAServiceImpl implements COAService {
     }
 
     @Override
-    public ResultMessageBean<Object> modifyCOA(String userAccount,Integer coaId, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems){
+    public ResultMessageBean<Object> modifyCOA(String userAccount,Integer coaId, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems, String importPackages){
         CauseOfAction coa = coaRepository.findCauseOfActionById(coaId);
         if(coaRepository.findCauseOfActionByName(coaName)!=null&&!coaRepository.findCauseOfActionByName(coaName).getId().equals(coaId)){
             return ResultMessageUtil.error(-1,"同名案由已存在");
@@ -118,13 +120,13 @@ public class COAServiceImpl implements COAService {
         //然后把修改好的依次再插进去
         switch (type) {
             case "CIVIL":
-                coaRepository.save(new CauseOfAction(coaId, COAType.CIVIL, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(coaId, COAType.CIVIL, coaName, userAccount ,importPackages));
                 break;
             case "ADMINISTRATIVE":
-                coaRepository.save(new CauseOfAction(coaId, COAType.ADMINISTRATIVE, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(coaId, COAType.ADMINISTRATIVE, coaName, userAccount, importPackages));
                 break;
             case "CRIMINAL":
-                coaRepository.save(new CauseOfAction(coaId, COAType.CRIMINAL, coaName, userAccount));
+                coaRepository.save(new CauseOfAction(coaId, COAType.CRIMINAL, coaName, userAccount, importPackages));
                 break;
             default:
                 return ResultMessageUtil.error(-1, "案由类别错误");
@@ -139,6 +141,8 @@ public class COAServiceImpl implements COAService {
 
         //然后插入新建的信息项，同时创建案由信息项连接表
         for (InformationItem item : items) {
+            //新建的信息项要有coa_id
+            item.setCoaId(coaId);
             InformationItem in=informationItemRepository.save(item);
             coaInformationItemRepository.save(new COAInformationItem(in.getId(),coaId));
         }
@@ -163,6 +167,8 @@ public class COAServiceImpl implements COAService {
         }
 
         String type = coa.getType();
+        //先将imports项插进去
+        MethodUtil.addImports(type,coa.getImportPackages());
         //根据案由查找信息项，并且将代码插到项目里
         List<COAInformationItem> coaInformationItems = coaInformationItemRepository.findByCoaId(coaId);
         for(COAInformationItem coaInformationItem: coaInformationItems){

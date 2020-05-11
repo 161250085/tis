@@ -18,16 +18,18 @@ public class ModifiedCauseOfActionVO {
     String coaName;
     List<InformationItem> items;
     List<InformationItem> existedItems;
+    String importPackages;
 
     public ModifiedCauseOfActionVO(){}
 
-    public ModifiedCauseOfActionVO(Integer coaId, String account, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems) {
+    public ModifiedCauseOfActionVO(Integer coaId, String account, String type, String coaName, List<InformationItem> items, List<InformationItem> existedItems, String importPackages) {
         this.coaId = coaId;
         this.account = account;
         this.type = type;
         this.coaName = coaName;
         this.items = items;
         this.existedItems = existedItems;
+        this.importPackages = importPackages;
     }
 
 
@@ -78,5 +80,13 @@ public class ModifiedCauseOfActionVO {
 
     public void setExistedItems(List<InformationItem> existedItems) {
         this.existedItems = existedItems;
+    }
+
+    public String getImportPackages() {
+        return importPackages;
+    }
+
+    public void setImportPackages(String importPackages) {
+        this.importPackages = importPackages;
     }
 }
