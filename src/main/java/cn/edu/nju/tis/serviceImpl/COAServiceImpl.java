@@ -141,8 +141,6 @@ public class COAServiceImpl implements COAService {
         for (InformationItem item : items) {
             InformationItem in=informationItemRepository.save(item);
             coaInformationItemRepository.save(new COAInformationItem(in.getId(),coaId));
-            coaInformationItemRepository.save(new COAInformationItem(4,1));
-            coaInformationItemRepository.save(new COAInformationItem(17,1));
         }
         return ResultMessageUtil.success();
     }
