@@ -17,14 +17,16 @@ public class COAandInfoItemVO {
     private String name;
     private String state;
     private String account;
+    private String importPackages;
     private List<InformationItem> infoItems;
 
-    public COAandInfoItemVO(Integer id, String type, String name, String state, String account, List<InformationItem> infoItems) {
+    public COAandInfoItemVO(Integer id, String type, String name, String state, String account, String importPackages, List<InformationItem> infoItems) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.state = state;
         this.account = account;
+        this.importPackages = importPackages;
         this.infoItems = infoItems;
     }
 
@@ -54,4 +56,12 @@ public class COAandInfoItemVO {
     public List<InformationItem> getInfoItems() { return infoItems; }
 
     public void setInfoItems(List<InformationItem> infoItems) { this.infoItems = infoItems; }
+
+    public String getImportPackages() {
+        return importPackages;
+    }
+
+    public void setImportPackages(String importPackages) {
+        this.importPackages = importPackages;
+    }
 }

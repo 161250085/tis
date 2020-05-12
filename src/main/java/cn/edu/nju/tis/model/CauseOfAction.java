@@ -55,6 +55,7 @@ public class CauseOfAction implements Serializable {
     }
 
     public CauseOfAction(Integer coaId, COAType type, String name, String account, String importPackages) {
+        this.id = coaId;
         this.type = type.value;
         this.name = name;
         this.account = account;
