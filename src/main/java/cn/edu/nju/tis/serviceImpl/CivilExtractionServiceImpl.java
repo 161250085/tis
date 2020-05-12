@@ -397,5 +397,4 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
 
     }
 
-
 }

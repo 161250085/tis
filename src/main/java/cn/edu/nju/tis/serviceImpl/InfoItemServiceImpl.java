@@ -19,4 +19,9 @@ public class InfoItemServiceImpl implements InfoItemService {
     public List<InformationItem> findRegisteredInformationItems() {
         return informationItemRepository.findByState(StateType.REGISTERED.value);
     }
+
+    @Override
+    public List<InformationItem> findInfoItemsByCOAId(Integer coaId) {
+        return informationItemRepository.findByCoaId(coaId);
+    }
 }

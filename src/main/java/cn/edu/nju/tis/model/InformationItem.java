@@ -9,7 +9,6 @@ public class InformationItem implements Serializable {
     @Id
     @Column(name = "info_item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Integer id;
 
     @Column(name = "info_item_name")
@@ -26,8 +25,7 @@ public class InformationItem implements Serializable {
 
     private String state;
 
-    public InformationItem() {
-    }
+    public InformationItem(){ }
 
     public InformationItem(int id){
         this.id = id;
@@ -42,6 +40,13 @@ public class InformationItem implements Serializable {
         this.id = id;
         this.name = name;
         this.account = account;
+    }
+
+    public InformationItem(int id, String name, String account, Integer coaId){
+        this.id = id;
+        this.name = name;
+        this.account = account;
+        this.coaId = coaId;
     }
 
     public InformationItem(String name, String code, String account){
@@ -122,7 +127,6 @@ public class InformationItem implements Serializable {
                 "信息项名="+name+
                 "代码="+code+
                 "创建人="+account+
-                "创建案由="+coaId+
                 "状态="+state+'}';
     }
 }

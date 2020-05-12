@@ -69,8 +69,7 @@ public class COAServiceImpl implements COAService {
         }
         //最后将已有的item和coa联系起来，加入数据库
         for(String item:existedItem){
-            Integer infoId = informationItemRepository.findByName(item).getId();
-            coaInformationItemRepository.save(new COAInformationItem(infoId, coaId));
+            coaInformationItemRepository.save(new COAInformationItem(Integer.parseInt(item), coaId));
         }
         return ResultMessageUtil.success();
     }
