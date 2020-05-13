@@ -5,11 +5,14 @@ import cn.edu.nju.tis.repository.COAInformationItemRepository;
 import cn.edu.nju.tis.repository.COARepository;
 import cn.edu.nju.tis.repository.InformationItemRepository;
 import cn.edu.nju.tis.service.COAService;
+import cn.edu.nju.tis.service.ElementExtractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/test")
@@ -23,9 +26,11 @@ public class test {
     COARepository coaRepository;
     @Autowired
     COAService coaService;
+    @Autowired
+    ElementExtractionService elementExtractionService;
     @RequestMapping(value = "/test1", method = RequestMethod.GET)
-    public String test1(@RequestParam(value = "coaId") Integer coaId){
-        return coaInformationItemRepository.findOwnByCoaId(coaId).toString();
+    public void test1(@RequestParam(value = "name") String name,@RequestParam(value = "filePath") String filePath) throws IOException {
+        elementExtractionService.downloadXML(name,filePath);
     }
     @RequestMapping(value = "/test2", method = RequestMethod.GET)
     public void test2(@RequestParam(value = "itemId") Integer itemId){

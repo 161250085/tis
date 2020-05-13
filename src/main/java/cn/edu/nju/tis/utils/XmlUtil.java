@@ -9,7 +9,7 @@ import org.dom4j.io.SAXReader;
 import java.io.File;
 import java.util.List;
 
-public class xmlUtil {
+public class XmlUtil {
     //验证文件后缀是不是正确
     public static boolean is_xml(String filePath){
         return filePath.matches("^.+\\.(?i)(xml)$");

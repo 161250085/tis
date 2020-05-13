@@ -8,6 +8,7 @@ import cn.edu.nju.tis.repository.InformationItemRepository;
 import cn.edu.nju.tis.service.ElementExtractionService;
 import cn.edu.nju.tis.utils.ChineseCharToEn;
 import cn.edu.nju.tis.utils.ResultMessageUtil;
+import cn.edu.nju.tis.utils.XmlUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -18,11 +19,10 @@ import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -31,6 +31,45 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     InformationItemRepository informationItemRepository;
     @Autowired
     COARepository coaRepository;
+
+    //将本地xml上传到upload文件夹中
+    @Override
+    public ResultMessageBean<Object> uploadXML(String filePath) throws IOException {
+        if(!XmlUtil.isValidXML(filePath)){
+            return ResultMessageUtil.error(-1,"非xml文件");
+        }
+        File file = new File(filePath);
+        String fileName = file.getName();
+        BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/uploadXML/"+fileName), "UTF-8"));
+        String str;
+        while ((str = br.readLine()) != null) {
+            writer.write(str);
+            writer.write("\r\n");
+        }
+
+        br.close();
+        writer.close();
+        return ResultMessageUtil.success();
+    }
+
+    //根据文件名和本地地址下载抽取完成的xml
+    @Override
+    public ResultMessageBean<Object> downloadXML(String fileName, String filePath) throws IOException {
+        filePath = filePath+"/"+fileName;
+        BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/outputXML/"+fileName), StandardCharsets.UTF_8));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8));
+        String str;
+        while ((str = br.readLine()) != null) {
+            writer.write(str);
+            writer.write("\r\n");
+        }
+
+        br.close();
+        writer.close();
+        return ResultMessageUtil.success();
+    }
+
 
     /**
      * @Author cruck

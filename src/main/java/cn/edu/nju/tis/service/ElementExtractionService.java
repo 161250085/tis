@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 public interface ElementExtractionService {
+    ResultMessageBean<Object> uploadXML(String filePath) throws IOException;
+
+    ResultMessageBean<Object> downloadXML(String fileName, String filePath) throws  IOException;
     String itemsExtraction(String coaName, String filePath) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException;
+
     ResultMessageBean<Object> itemsExtractionAndWrite(String coaName, String filePath, String desPath) throws DocumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, IOException;
 }
