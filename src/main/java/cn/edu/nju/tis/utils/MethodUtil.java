@@ -97,6 +97,9 @@ public class MethodUtil {
     //从第一行后插入imports
     //机制：读到第一个";"后，先换行，然后插入
     private static void insertImports(String filepath,String imports) throws IOException {
+        if(imports == null){
+            return;
+        }
         imports = "\n"+imports;
         File tmp = File.createTempFile("tmp", null);
         tmp.deleteOnExit();

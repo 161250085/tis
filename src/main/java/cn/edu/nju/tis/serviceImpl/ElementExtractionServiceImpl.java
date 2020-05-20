@@ -23,6 +23,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -79,7 +80,24 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
      * @return java.lang.String
      **/
     @Override
-    public String itemsExtraction(String coaName,String filePath) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException {
+    public String itemsExtraction(String filePath) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException {
+        String coaName = "";
+        Document dom = load(filePath);
+        Element root = dom.getRootElement();
+        List<Element> skills = root.elements();
+        for (Element skill : skills) {
+            for(Iterator<Element> it = skill.elementIterator(); it.hasNext();){
+                Element e = it.next();
+                if(e.attribute("nameCN").getValue().equals("案由")) {
+                    coaName = e.attribute("value").getValue();
+                }
+            }
+
+        }
+        if(coaName.equals("")){
+            return "案由未收录";
+        }
+
         CauseOfAction coa = coaRepository.findCauseOfActionByName(coaName);
         List<InformationItem> informationItems = informationItemRepository.findInformationItemsByCOAId(coa.getId());
 
@@ -87,10 +105,10 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         SAXReader reader = new SAXReader();
         File file = new File(filePath);
         Document document = reader.read(file);
-        Element root = document.addElement(ChineseCharToEn.getInstance().getAllFirstLetter(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
+        Element rootElement = document.addElement(ChineseCharToEn.getInstance().getAllFirstLetter(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
 
         //要素抽取
-        invokeMethod(coa, informationItems, document, root);
+        invokeMethod(coa, informationItems, document, rootElement);
         return document.asXML();
 
     }
@@ -155,5 +173,16 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     public static void initXML(Document document,Element newroot){//将原文加进去
         Element root = document.getRootElement();
         newroot.add((Element)root.clone());
+    }
+
+    public static Document load(String filename) {
+        Document document = null;
+        try {
+            SAXReader saxReader = new SAXReader();
+            document = saxReader.read(new File(filename));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return document;
     }
 }

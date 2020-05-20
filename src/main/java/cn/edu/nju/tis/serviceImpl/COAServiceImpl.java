@@ -169,9 +169,7 @@ public class COAServiceImpl implements COAService {
         //先将imports项插进去
         MethodUtil.addImports(type,coa.getImportPackages());
         //根据案由查找信息项，并且将代码插到项目里
-        List<COAInformationItem> coaInformationItems = coaInformationItemRepository.findByCoaId(coaId);
-        for(COAInformationItem coaInformationItem: coaInformationItems){
-            InformationItem informationItem = informationItemRepository.findInformationItemById(coaInformationItem.getInfoId());
+        for(InformationItem informationItem: informationItemList){
             MethodUtil.addMethod(type,informationItem.getCode());
         }
 
