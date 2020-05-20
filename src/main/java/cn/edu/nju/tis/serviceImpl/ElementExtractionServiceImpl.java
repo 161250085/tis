@@ -17,12 +17,17 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,93 +40,63 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
 
     //将本地xml上传到upload文件夹中
     @Override
-    public ResultMessageBean<Object> uploadXML(String filePath) throws IOException {
-        if(!XmlUtil.isValidXML(filePath)){
-            return ResultMessageUtil.error(-1,"非xml文件");
+    public ResultMessageBean<Object> uploadXML(MultipartFile[] files) throws IOException, NoSuchMethodException, IllegalAccessException, InstantiationException, DocumentException, InvocationTargetException, ClassNotFoundException {
+        MultipartFile[] newFiles = new MultipartFile[files.length];
+        for(int i=0; i<files.length; i++){
+            MultipartFile file = files[i];
+            if(!XmlUtil.isValidXML(file.getOriginalFilename())){
+                return ResultMessageUtil.error(-1,"非xml文件");
+            }
+            String newFileName = new Date().getTime() + "&" + file.getOriginalFilename();
+            String path = "src/main/resources/uploadXML/" + newFileName;
+            File newFile = new File(path);
+            file.transferTo(newFile);
+            itemsExtraction(path);
+            MultipartFile tmp_multi = getMultipartFile("src/main/resources/outputXML/"+newFileName);
+            newFiles[i] = tmp_multi;
         }
-        File file = new File(filePath);
-        String fileName = file.getName();
-        BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/uploadXML/"+fileName), "UTF-8"));
-        String str;
-        while ((str = br.readLine()) != null) {
-            writer.write(str);
-            writer.write("\r\n");
-        }
-
-        br.close();
-        writer.close();
-        return ResultMessageUtil.success();
+        return ResultMessageUtil.success(newFiles);
     }
 
     //根据文件名和本地地址下载抽取完成的xml
-    @Override
-    public ResultMessageBean<Object> downloadXML(String fileName, String filePath) throws IOException {
-        filePath = filePath+"/"+fileName;
-        BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/outputXML/"+fileName), StandardCharsets.UTF_8));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8));
-        String str;
-        while ((str = br.readLine()) != null) {
-            writer.write(str);
-            writer.write("\r\n");
-        }
-
-        br.close();
-        writer.close();
-        return ResultMessageUtil.success();
-    }
+//    @Override
+//    public ResultMessageBean<Object> downloadXML(String fileName, String filePath) throws IOException {
+//        filePath = filePath+"/"+fileName;
+//        BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/outputXML/"+fileName), StandardCharsets.UTF_8));
+//        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8));
+//        String str;
+//        while ((str = br.readLine()) != null) {
+//            writer.write(str);
+//            writer.write("\r\n");
+//        }
+//
+//        br.close();
+//        writer.close();
+//        return ResultMessageUtil.success();
+//    }
 
 
     /**
      * @Author cruck
-     * @Description //根据案由名称，通过反射调用信息项抽取方法，并且返回String类型的xml格式的数据
+     * @Description //根据案由名称，通过反射调用信息项抽取方法，并且将抽取的xml存放到outputXML上
      * @Date 20:53 2020/4/24
      * @Param [coaName]
      * @return java.lang.String
      **/
     @Override
-    public String itemsExtraction(String filePath) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException {
-        String coaName = "";
-        Document dom = load(filePath);
-        Element root = dom.getRootElement();
-        List<Element> skills = root.elements();
-        for (Element skill : skills) {
-            for(Iterator<Element> it = skill.elementIterator(); it.hasNext();){
-                Element e = it.next();
-                if(e.attribute("nameCN").getValue().equals("案由")) {
-                    coaName = e.attribute("value").getValue();
-                }
-            }
-
-        }
-        if(coaName.equals("")){
-            return "案由未收录";
-        }
+    public ResultMessageBean<Object> itemsExtraction(String fileName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException, IOException {
+       String path = "src/main/resources/upload/"+fileName;
+       String coaName = getCOAName(path);
+       if(coaName.equals("案由不存在")){
+           return ResultMessageUtil.error(-1,"案由不存在");
+       }
 
         CauseOfAction coa = coaRepository.findCauseOfActionByName(coaName);
         List<InformationItem> informationItems = informationItemRepository.findInformationItemsByCOAId(coa.getId());
 
         //先新建xml
         SAXReader reader = new SAXReader();
-        File file = new File(filePath);
-        Document document = reader.read(file);
-        Element rootElement = document.addElement(ChineseCharToEn.getInstance().getAllFirstLetter(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
-
-        //要素抽取
-        invokeMethod(coa, informationItems, document, rootElement);
-        return document.asXML();
-
-    }
-
-    @Override
-    public ResultMessageBean<Object> itemsExtractionAndWrite(String coaName, String filePath, String desPath) throws DocumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, IOException {
-        CauseOfAction coa = coaRepository.findCauseOfActionByName(coaName);
-        List<InformationItem> informationItems = informationItemRepository.findInformationItemsByCOAId(coa.getId());
-
-        //先新建xml
-        SAXReader reader = new SAXReader();
-        File file = new File(filePath);
-        String fileName = file.getName();
+        File file = new File(path);
         Document document = reader.read(file);
         Element root = DocumentHelper.createElement("write");
         Document new_document = DocumentHelper.createDocument(root);
@@ -133,9 +108,10 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         invokeMethod(coa, informationItems, document, newRoot);
         OutputFormat format = new OutputFormat("    ",true);
         format.setEncoding("UTF-8");
-        XMLWriter xmlWriter = new XMLWriter(new FileOutputStream(desPath+fileName+"要素提取.xml"),format);
+        XMLWriter xmlWriter = new XMLWriter(new FileOutputStream("src/main/resources/outputXML/"+fileName),format);
         xmlWriter.write(new_document);
         xmlWriter.close();
+
         return ResultMessageUtil.success();
     }
 
@@ -184,5 +160,29 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
             ex.printStackTrace();
         }
         return document;
+    }
+
+    //将文件地址转换成MultipartFile
+    private MultipartFile getMultipartFile(String  filePath) throws IOException {
+        File file = new File(filePath);
+
+        FileInputStream input = new FileInputStream(file);
+
+        return new MockMultipartFile("file", file.getName(), "text/plain", input);
+    }
+
+    private String getCOAName(String filePath){
+        Document dom = load(filePath);
+        Element root = dom.getRootElement();
+        List<Element> skills = root.elements();
+        for (Element skill : skills) {
+            for(Iterator<Element> it = skill.elementIterator(); it.hasNext();){
+                Element e = it.next();
+                if(e.attribute("nameCN").getValue().equals("案由")) {
+                    return e.attribute("value").getValue();
+                }
+            }
+        }
+        return "案由不存在";
     }
 }

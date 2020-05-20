@@ -25,6 +25,8 @@ public class InformationItem implements Serializable {
 
     private String state;
 
+    private String description;
+
     public InformationItem(){ }
 
     public InformationItem(int id){
@@ -71,6 +73,7 @@ public class InformationItem implements Serializable {
         this.coaId = coaId;
         this.state = StateType.UNDER_REVIEWED.value;
     }
+
 
     public Integer getId() {
         return id;
@@ -120,6 +123,14 @@ public class InformationItem implements Serializable {
         this.coaId = coaId;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "InformationItem{"+
@@ -127,6 +138,7 @@ public class InformationItem implements Serializable {
                 "信息项名="+name+
                 "代码="+code+
                 "创建人="+account+
-                "状态="+state+'}';
+                "状态="+state+
+                "描述="+description+'}';
     }
 }
