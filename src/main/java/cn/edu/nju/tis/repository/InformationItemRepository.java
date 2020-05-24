@@ -28,6 +28,7 @@ public interface InformationItemRepository extends JpaRepository<InformationItem
     @Query("select items from InformationItem items where items.id in (select item.infoId from COAInformationItem item where item.coaId =?1) and items.account = ?2" )
     List<InformationItem> findInformationItemsWithCodeByCOAIdAndAccount(Integer coaId, String userAccount);
 
+    @Modifying
     @Query("update InformationItem item set item = ?1 where item.id = ?2")
     void updateItemById(InformationItem item, Integer id);
 

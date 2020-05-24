@@ -55,8 +55,8 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
             }
 
         }
-        System.out.println(xsdateList);
-        System.out.println(rhxs);
+//        System.out.println(xsdateList);
+//        System.out.println(rhxs);
         if(xsdateList.size()>0){
             xsdate = xsdateList.get(0);
         }
@@ -92,7 +92,7 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
                 }
             }
         }
-        System.out.println(qllagxsj);
+//        System.out.println(qllagxsj);
         if(qllagxsj.size()>0){
             qdlagxsj = qllagxsj.get(0);
         }
@@ -126,7 +126,7 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
                 }
             }
         }
-        System.out.println(jhdjsjList);
+//        System.out.println(jhdjsjList);
         if(jhdjsjList.size()>0){
             jhdjsj = jhdjsjList.get(0);
         }
@@ -158,7 +158,7 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
                 }
             }
         }
-        System.out.println(jbjhyssjList);
+//        System.out.println(jbjhyssjList);
         if(jbjhyssjList.size()>0){
             jbjhyssj = (String) jbjhyssjList.get(0);
         }
@@ -219,8 +219,8 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
 
 
         }
-        System.out.println(fqbhList);
-        System.out.println(fqbhyy);
+//        System.out.println(fqbhList);
+//        System.out.println(fqbhyy);
         if(fqbhList.size()>0){
             fqbhkssj = fqbhList.get(0);
         }
@@ -355,10 +355,10 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
 
 
         }
-        System.out.println("开始分居时间"+ksfjsj);
-        System.out.println("开始分居原因"+ksfjyy);
-        System.out.println("原告现居住地"+ygxjzd);
-        System.out.println("被告现居住地"+ygxjzd);
+//        System.out.println("开始分居时间"+ksfjsj);
+//        System.out.println("开始分居原因"+ksfjyy);
+//        System.out.println("原告现居住地"+ygxjzd);
+//        System.out.println("被告现居住地"+ygxjzd);
 
         if(ksfjsj.size()>0){
             ksfjsjStr = (String) ksfjsj.get(0);
