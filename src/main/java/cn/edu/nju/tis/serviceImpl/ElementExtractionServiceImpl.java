@@ -27,10 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ElementExtractionServiceImpl implements ElementExtractionService {
@@ -42,8 +39,8 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     //将本地xml上传到upload文件夹中
     @Override
     public ResultMessageBean<Object> uploadXML(MultipartFile[] files) throws IOException, NoSuchMethodException, IllegalAccessException, InstantiationException, DocumentException, InvocationTargetException, ClassNotFoundException {
-        MultipartFile[] newFiles = new MultipartFile[files.length];
-        List<String> resultData = new ArrayList<>();
+//        MultipartFile[] newFiles = new MultipartFile[files.length];
+        Map<String,String> resultData = new HashMap<>();
         for (MultipartFile file : files) {
             if (!XmlUtil.isValidXML(file.getOriginalFilename())) {
                 return ResultMessageUtil.error(-1, "非xml文件");
@@ -52,7 +49,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
             String path = "src/main/resources/uploadXML/" + newFileName;
             File newFile = new File(path);
             file.transferTo(newFile);
-            resultData.add((String) itemsExtraction(newFileName).getResultData());
+            resultData.put(file.getOriginalFilename(),(String) itemsExtraction(newFileName).getResultData());
 //            MultipartFile tmp_multi = getMultipartFile("src/main/resources/outputXML/"+newFileName);
 //            newFiles[i] = tmp_multi;
         }
