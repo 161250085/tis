@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -42,20 +43,20 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     @Override
     public ResultMessageBean<Object> uploadXML(MultipartFile[] files) throws IOException, NoSuchMethodException, IllegalAccessException, InstantiationException, DocumentException, InvocationTargetException, ClassNotFoundException {
         MultipartFile[] newFiles = new MultipartFile[files.length];
-        for(int i=0; i<files.length; i++){
-            MultipartFile file = files[i];
-            if(!XmlUtil.isValidXML(file.getOriginalFilename())){
-                return ResultMessageUtil.error(-1,"非xml文件");
+        List<String> resultData = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (!XmlUtil.isValidXML(file.getOriginalFilename())) {
+                return ResultMessageUtil.error(-1, "非xml文件");
             }
             String newFileName = new Date().getTime() + "&" + file.getOriginalFilename();
             String path = "src/main/resources/uploadXML/" + newFileName;
             File newFile = new File(path);
             file.transferTo(newFile);
-            itemsExtraction(newFileName);
-            MultipartFile tmp_multi = getMultipartFile("src/main/resources/outputXML/"+newFileName);
-            newFiles[i] = tmp_multi;
+            resultData.add((String) itemsExtraction(newFileName).getResultData());
+//            MultipartFile tmp_multi = getMultipartFile("src/main/resources/outputXML/"+newFileName);
+//            newFiles[i] = tmp_multi;
         }
-        return ResultMessageUtil.success(newFiles);
+        return ResultMessageUtil.success(resultData);
     }
 
     //根据文件名和本地地址下载抽取完成的xml
@@ -98,12 +99,11 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         SAXReader reader = new SAXReader();
         File file = new File(path);
         Document document = reader.read(file);
-        Element root = DocumentHelper.createElement("write");
-        Document new_document = DocumentHelper.createDocument(root);
+//        Element root = DocumentHelper.createElement();
+//        Document new_document = DocumentHelper.createDocument(root);
         //initXML(document,root);
-        Element newRoot;
-        newRoot = root.addElement(ChineseCharToEn.getInstance().getAllFirstLetter(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
-
+        Element newRoot = DocumentHelper.createElement(ChineseCharToEn.getInstance().getAllFirstLetter(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
+        Document new_document = DocumentHelper.createDocument(newRoot);
         //要素抽取
         invokeMethod(coa, informationItems, document, newRoot);
         OutputFormat format = new OutputFormat("    ",true);
@@ -112,7 +112,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         xmlWriter.write(new_document);
         xmlWriter.close();
 
-        return ResultMessageUtil.success();
+        return ResultMessageUtil.success(new_document.asXML());
     }
 
     private void invokeMethod(CauseOfAction coa, List<InformationItem> informationItems, Document document, Element newRoot) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
