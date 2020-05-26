@@ -1,5 +1,4 @@
 package cn.edu.nju.tis.service;
-
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -24,6 +23,5 @@ public interface CivilExtractionService {
     void FJ(Document document,Element newroot);
 
     void JHQKJFYBD(Document document,Element newroot);
-
 
 }

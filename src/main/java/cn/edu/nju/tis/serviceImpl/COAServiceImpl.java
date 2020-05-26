@@ -30,19 +30,24 @@ public class COAServiceImpl implements COAService {
 
     //新的信息项得加上coa_id
     @Override
-    public ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, String importPackages,ConcurrentHashMap<String, String> itemAndCode, List<String> existedItem){
+    public ResultMessageBean<Object> addCOA(String type, String coaName, String userAccount, String importPackages, List<InformationItem> items, List<String> existedItem){
         //如果案由存在直接返回失败
         if(coaRepository.findCauseOfActionByName(coaName)!=null){
             return ResultMessageUtil.error(-1,"同名案由已存在");
         }
-        //如果信息项存在同名，也直接返回失败；信息项列表本身不能有重名
+
+        //测试一下新的信息项有没有重复的
         Set<String> set = new HashSet<>();
-        for(Map.Entry<String, String> entry: itemAndCode.entrySet() ){
-            if(!set.add(entry.getKey())){
-                return ResultMessageUtil.error(-1, "同名信息项已存在");
+        for(InformationItem informationItem: items){
+            if(!set.add(informationItem.getName())){
+                return ResultMessageUtil.error(-1,"请不要添加同名信息项");
             }
-            if(informationItemRepository.findByName(entry.getKey())!=null){
-                return ResultMessageUtil.error(-1,"\""+entry.getKey()+"\""+"已存在");
+        }
+
+        //测一下新的信息项有没有已经存在的
+        for(InformationItem informationItem:items){
+            if(informationItemRepository.findByName(informationItem.getName())!=null) {
+                return ResultMessageUtil.error(-1, "\"" + informationItem.getName() + "\"已存在");
             }
         }
 
@@ -62,10 +67,13 @@ public class COAServiceImpl implements COAService {
         }
         CauseOfAction causeOfAction = coaRepository.findCauseOfActionByName(coaName);
         Integer coaId = causeOfAction.getId();
-        //接下来存储item，同时存储item-coaId数据库
-        for(Map.Entry<String, String> entry: itemAndCode.entrySet() ){
-            informationItemRepository.save(new InformationItem(entry.getKey(),entry.getValue(),userAccount,coaId));
-            coaInformationItemRepository.save(new COAInformationItem(informationItemRepository.findByName(entry.getKey()).getId(),coaId));
+        //然后插入新建的信息项，同时创建案由信息项连接表
+        for (InformationItem item : items) {
+            //新建的信息项要有coa_id
+            item.setCoaId(coaId);
+            item.setAccount(userAccount);
+            InformationItem in=informationItemRepository.save(item);
+            coaInformationItemRepository.save(new COAInformationItem(in.getId(),coaId));
         }
         //最后将已有的item和coa联系起来，加入数据库
         for(String item:existedItem){
@@ -92,7 +100,7 @@ public class COAServiceImpl implements COAService {
             }
         }
 
-        //得到除了自己独有信息项意外以外的信息项
+        //得到除了自己独有信息项以外的信息项
         List<InformationItem> informationItems = informationItemRepository.findAll();
         List<COAInformationItem> coaInformationItems = coaInformationItemRepository.findOwnByCoaId(coa.getId());
         for(COAInformationItem coaInformationItem:coaInformationItems){
