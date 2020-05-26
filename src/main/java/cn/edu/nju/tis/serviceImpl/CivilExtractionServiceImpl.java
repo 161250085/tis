@@ -74,7 +74,7 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
         ArrayList<String> qllagxsj = new ArrayList<>();
         if(root.attribute("value")!=null){
             String qwStr = root.attributeValue("value");
-            String[] qwStrarray = qwStr.split("[。，；]");
+            String[] qwStrarray = qwStr.split("。|，|；");
             //建立恋爱时间
             for(String qw:qwStrarray){
                 Matcher matcher = pattern.matcher(qw);
