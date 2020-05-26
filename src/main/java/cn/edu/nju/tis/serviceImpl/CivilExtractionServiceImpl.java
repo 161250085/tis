@@ -41,12 +41,9 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
                         TimeUtil.getDate(qw, xsdateList, CivilExtractionServiceImpl.datePattern);
                         break;
                     }
-
                 }
             }
-
             //如何相识
-
             for(String qw:qwStrarray){
                 if(qw.contains("相识")){
                     rhxs = qw;

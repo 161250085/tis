@@ -51,7 +51,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
             String path = "src/main/resources/uploadXML/" + newFileName;
             File newFile = new File(path);
             file.transferTo(newFile);
-            itemsExtraction(path);
+            itemsExtraction(newFileName);
             MultipartFile tmp_multi = getMultipartFile("src/main/resources/outputXML/"+newFileName);
             newFiles[i] = tmp_multi;
         }
@@ -85,7 +85,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
      **/
     @Override
     public ResultMessageBean<Object> itemsExtraction(String fileName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException, IOException {
-       String path = "src/main/resources/upload/"+fileName;
+       String path = "src/main/resources/uploadXML/"+fileName;
        String coaName = getCOAName(path);
        if(coaName.equals("案由不存在")){
            return ResultMessageUtil.error(-1,"案由不存在");
@@ -100,7 +100,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         Document document = reader.read(file);
         Element root = DocumentHelper.createElement("write");
         Document new_document = DocumentHelper.createDocument(root);
-        initXML(document,root);
+        //initXML(document,root);
         Element newRoot;
         newRoot = root.addElement(ChineseCharToEn.getInstance().getAllFirstLetter(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
 
@@ -116,14 +116,13 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
     }
 
     private void invokeMethod(CauseOfAction coa, List<InformationItem> informationItems, Document document, Element newRoot) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        Element node = newRoot.addElement("ELEMENTS").addAttribute("nameCN", "信息项");
         switch (coa.getType()) {
             case "CIVIL":
                 for (InformationItem item : informationItems) {
                     String methodName = ChineseCharToEn.getInstance().getAllFirstLetter(item.getName());
                     Class<?> clazz = Class.forName("cn.edu.nju.tis.serviceImpl.CivilExtractionServiceImpl");
                     Method method = clazz.getDeclaredMethod(methodName, Document.class, Element.class);
-                    method.invoke(clazz.newInstance(),document, node);
+                    method.invoke(clazz.newInstance(),document, newRoot);
                 }
                 break;
             case "ADMINISTRATIVE":
@@ -131,7 +130,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
                     String methodName = ChineseCharToEn.getInstance().getAllFirstLetter(item.getName());
                     Class<?> clazz = Class.forName("cn.edu.nju.tis.serviceImpl.AdministrativeExtractionServiceImpl");
                     Method method = clazz.getDeclaredMethod(methodName, Document.class, Element.class);
-                    method.invoke(clazz.newInstance(),document, node);
+                    method.invoke(clazz.newInstance(),document, newRoot);
 
                 }
                 break;
@@ -140,16 +139,16 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
                     String methodName = ChineseCharToEn.getInstance().getAllFirstLetter(item.getName());
                     Class<?> clazz = Class.forName("cn.edu.nju.tis.serviceImpl.CriminalExtractionServiceImpl");
                     Method method = clazz.getDeclaredMethod(methodName, Document.class, Element.class);
-                    method.invoke(clazz.newInstance(),document, node);
+                    method.invoke(clazz.newInstance(),document, newRoot);
                 }
                 break;
         }
     }
 
-    public static void initXML(Document document,Element newroot){//将原文加进去
-        Element root = document.getRootElement();
-        newroot.add((Element)root.clone());
-    }
+//    public static void initXML(Document document,Element newroot){//将原文加进去
+//        Element root = document.getRootElement();
+//        newroot.add((Element)root.clone());
+//    }
 
     public static Document load(String filename) {
         Document document = null;
