@@ -47,8 +47,8 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
             }
             String newFileName = new Date().getTime() + "&" + file.getOriginalFilename();
             String path = "src/main/resources/uploadXML/" + newFileName;
-            File newFile = new File(path);
-            file.transferTo(newFile);
+//            File newFile = new File(path);
+//            file.transferTo(newFile);
             resultData.put(file.getOriginalFilename(),(String) itemsExtraction(newFileName).getResultData());
 //            MultipartFile tmp_multi = getMultipartFile("src/main/resources/outputXML/"+newFileName);
 //            newFiles[i] = tmp_multi;
@@ -56,10 +56,9 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         return ResultMessageUtil.success(resultData);
     }
 
-    //根据文件名和本地地址下载抽取完成的xml
+//    根据文件名下载抽取完成的xml
 //    @Override
-//    public ResultMessageBean<Object> downloadXML(String fileName, String filePath) throws IOException {
-//        filePath = filePath+"/"+fileName;
+//    public ResultMessageBean<Object> downloadXML(String fileName) throws IOException {
 //        BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/outputXML/"+fileName), StandardCharsets.UTF_8));
 //        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8));
 //        String str;

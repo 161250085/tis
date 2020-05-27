@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 public interface ElementExtractionService {
     ResultMessageBean<Object> uploadXML(MultipartFile[] files) throws IOException, NoSuchMethodException, IllegalAccessException, InstantiationException, DocumentException, InvocationTargetException, ClassNotFoundException;
 
-//    ResultMessageBean<Object> downloadXML(String fileName, String filePath) throws  IOException;
+//    ResultMessageBean<Object> downloadXML(String fileName) throws  IOException;
 
     ResultMessageBean<Object> itemsExtraction(String filePath) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException, IOException;
 
