@@ -952,7 +952,7 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
 
         if(flagfj2n==1){
             ifcz = "是";
-            System.out.println(ifcz+"VVVVVVVVVVVVVVVVVVVVVVVVVVv");
+//            System.out.println(ifcz+"VVVVVVVVVVVVVVVVVVVVVVVVVVv");
         }
 
 
