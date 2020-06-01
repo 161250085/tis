@@ -2,6 +2,7 @@ package cn.edu.nju.tis.serviceImpl;
 
 import cn.edu.nju.tis.service.CivilExtractionService;
 import cn.edu.nju.tis.utils.TimeUtil;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 @Service
 public class CivilExtractionServiceImpl implements CivilExtractionService {
     public static String datePattern =  "(\\d{4}年(\\d{1,2}月)?(\\d{1,2}日)?(\\d{1,2}时)?(\\d{1,2}分)?)";
+    static boolean is29 = true;
     /*
      *1 相识时间以及如何相识
      *  此方法把相识字符串里的所有时间都提取出来了，目前没有两个日期
@@ -1050,6 +1052,1085 @@ public class CivilExtractionServiceImpl implements CivilExtractionService {
 
     }
 
+    //18.信息项：是否患有是疾病缺陷 简介：否存在一方患有法定禁止结婚疾病的，或一方有生理缺陷，或其它原因不能发生性行为，且难以治愈的情形
+    public static void sfhyjbqx(Document document,Element newroot){
+        Element sfhyjbqxNode=newroot.addElement("SFHYJBQX");
+        sfhyjbqxNode.addAttribute("nameCN", "是否存在一方患有法定禁止结婚疾病的，或一方有生理缺陷，或其它原因不能发生性行为，且难以治愈的情形");
+        String sf="否";
+        int fnull = 0 ;
+        Element root=document.getRootElement();
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode=root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                List<Element> cmssdNode=ajjbqkNode.elements("CMSSD");
+                for(Element e:cmssdNode){
+                    if(e.attribute("value")!=null){
+                        String[] qwStr=e.attributeValue("value").split("。");
+							/*for(String qw:qwStr){
+								if(((qw.contains("遗传")||qw.contains("传染")||qw.contains("精神")||qw.contains("性")
+										||qw.contains("艾滋")||qw.contains("淋"))&&qw.contains("病"))
+										||qw.contains("生理缺陷")
+										||((qw.contains("无法")||qw.contains("不能"))&&qw.contains("性行为"))
+											&&((qw.contains("治愈")||qw.contains("恢复"))&&(qw.contains("无法")||qw.contains("不能")))){
+									sf="存在";
+								}
+							}*/
+                        for(String qw:qwStr){
+                            if(((qw.contains("遗传")||qw.contains("传染")||qw.contains("精神")||qw.contains("性")
+                                    ||qw.contains("艾滋")||qw.contains("淋"))&&qw.contains("病"))){
+                                fnull = 1;
+                                sf="是";
+                            }else if(qw.contains("生理缺陷")){
+                                sf="是";
+                                fnull = 1;
+                            }else if((qw.contains("无法")||qw.contains("不能"))&&qw.contains("性行为")){
+                                fnull = 1;
+                                if((qw.contains("治愈")||qw.contains("恢复"))&&(qw.contains("无法")||qw.contains("不能"))){
+                                    sf="是";
 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(fnull == 0){
+            sfhyjbqxNode.addAttribute("value","未提及");
+        }else{
+            sfhyjbqxNode.addAttribute("value",sf);
+        }
+    }
+
+
+    //19.信息项：是否欺骗作假 简介：是否一方欺骗对方，或者在结婚登记时弄虚作假，骗取《结婚证》的情形
+    public static void sfqpzj(Document document,Element newroot){
+        Element sfqpzjNode=newroot.addElement("SFQPZJ");
+        sfqpzjNode.addAttribute("nameCN", "是否一方欺骗对方，或者在结婚登记时弄虚作假，骗取《结婚证》的情形");
+        String sf="否";
+        int fnull = 0;
+        Element root=document.getRootElement();
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode=root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                List<Element> cmssdNode=ajjbqkNode.elements("CMSSD");
+                for(Element e:cmssdNode){
+                    if(e.attribute("value")!=null){
+                        String[] qwStr=e.attributeValue("value").split("。");
+                        for(String qw:qwStr){
+                            if((qw.contains("结婚登记")||qw.contains("信息")||qw.contains("身份"))){
+                                fnull = 1 ;
+                                if((qw.contains("欺骗")||qw.contains("哄骗")||qw.contains("诱骗"))
+                                        ||
+                                        (qw.contains("作假")||qw.contains("造假"))&&(qw.contains("结婚登记")||qw.contains("信息")||qw.contains("身份"))){
+                                    sf="是";
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(fnull == 0){
+            sfqpzjNode.addAttribute("value","未提及");
+        }else{
+            sfqpzjNode.addAttribute("value",sf);
+        }
+    }
+    //20.信息项：是否未同居无和好 简介：是否存在双方办理结婚登记后，未同居生活，无和好可能的情形
+    public static void sfwtjwhh(Document document,Element newroot){
+        Element sfwtjwhhNode=newroot.addElement("SFWTJWHH");
+        sfwtjwhhNode.addAttribute("nameCN", "是否存在双方办理结婚登记后，未同居生活，无和好可能的情形");
+        String sf="否";
+        int fnull = 0;
+        Element root=document.getRootElement();
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode=root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                List<Element> cmssdNode=ajjbqkNode.elements("CMSSD");
+                for(Element e:cmssdNode){
+                    if(e.attribute("value")!=null){
+                        String[] qwStr=e.attributeValue("value").split("。");
+                        for(String qw:qwStr){
+
+                            if((qw.contains("同居")||qw.contains("居住")||((qw.contains("共同")
+                                    ||qw.contains("一起"))&&qw.contains("生活")))&&(qw.contains("未")||qw.contains("没"))
+                                    ||((qw.contains("和好")||qw.contains("复合"))&&(qw.contains("无")||qw.contains("没"))&&qw.contains("可能"))){
+                                fnull = 1;
+                                if(qw.contains("办理结婚登记后")){
+                                    sf="存在";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(fnull == 0){
+            sfwtjwhhNode.addAttribute("value","未提及");
+        }else{
+            sfwtjwhhNode.addAttribute("value",sf);
+        }
+    }
+    //21.信息项：是否包办买办婚姻 简介：是否存在包办、买卖婚姻、婚后一方随即提出离婚，或者虽共同生活多年，但确未建立起夫妻感情的情形
+    public static void sfbbmbhy(Document document,Element newroot){
+        Element sfbbmbhyNode=newroot.addElement("SFBBMBHY");
+        sfbbmbhyNode.addAttribute("nameCN", "是否存在包办、买卖婚姻、婚后一方随即提出离婚，或者虽共同生活多年，但确未建立起夫妻感情的情形");
+        String ifbbmb="否";
+        int fnull = 0;
+        Element root=document.getRootElement();
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode=root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                List<Element> cmssdNode=ajjbqkNode.elements("CMSSD");
+                for(Element e:cmssdNode){
+                    if(e.attribute("value")!=null){
+                        String[]  qwStrarray= e.attributeValue("value").split("。");
+                        for(String qw:qwStrarray){
+                            if(qw.contains("婚姻")&&(qw.contains("包办")||qw.contains("买办"))){
+                                fnull=1;
+                                if(qw.contains("婚姻")&&(qw.contains("包办")||qw.contains("买办"))
+                                        ||qw.contains("离婚")&&(qw.contains("立刻")||qw.contains("马上")||qw.contains("随即"))
+                                        ||((qw.contains("感情")||qw.contains("关系"))&&qw.contains("未确立"))){
+                                    ifbbmb="存在";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(fnull == 0){
+            sfbbmbhyNode.addAttribute("value","未提及");
+        }else{
+            sfbbmbhyNode.addAttribute("value",ifbbmb);
+        }
+    }
+    //22.简介：是否怀孕哺乳期 简介：起诉时女方是否怀孕或者哺乳期
+    public static void sfhybrq(Document document,Element newroot){
+        Element sfhybrqNode=newroot.addElement("SFHYBRQ");
+        sfhybrqNode.addAttribute("nameCN", "起诉时女方是否怀孕或者哺乳期");
+        String ifhy="否";
+        int fnull = 0;
+        Element root=document.getRootElement();
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode = root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){//查明事实段
+                List<Element> cmssdNode = ajjbqkNode.elements("CMSSD");
+                for(Element e:cmssdNode){
+                    if(e.attribute("value")!=null){
+                        String[]  qwStrarray= e.attributeValue("value").split("。");
+                        //起诉时是否怀孕或者哺乳期
+                        for(String qw:qwStrarray){
+                            if(qw.contains("处")||qw.contains("正")&&(qw.contains("怀孕")||qw.contains("哺乳期"))){
+                                fnull = 1;
+                                if(qw.contains("诉讼")&&(qw.contains("期")||qw.contains("间"))){
+                                    ifhy="是";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(fnull == 0){
+            sfhybrqNode.addAttribute("value","未提及");
+        }else{
+            sfhybrqNode.addAttribute("value",ifhy);
+        }
+    }
+
+    //23.信息项：生育子女情况
+    public static void syznqk(Document document,Element newroot){
+        String znqk="";
+        Element syznqkNode=newroot.addElement("SYZNQK");
+        syznqkNode.addAttribute("nameCN", "生育子女情况");
+        int fnull=0;
+        Element root=document.getRootElement();
+        String text=root.getName();
+        System.out.println(text);
+        if(text.equals("QW")){
+            List<Attribute> qwAttr=root.attributes();
+            for(Attribute attr:qwAttr){
+                if(attr.getName().equals("value")){
+                    ArrayList<String> li=new ArrayList<>();
+                    String qwValue=attr.getValue();
+                    String[] qwValues=qwValue.split("，|。|；");
+                    //for(int i=0;i<qwValues.length;i++)
+                    //System.out.println(qwValues[i]);
+                    for (String value : qwValues) {
+                        if ((value.contains("生") || value.contains("育") || value.contains("原、被告")
+                                || value.contains("婚生") || value.contains("双方")) && (value.contains("子") || value.contains("女") || value.contains("男") || value.contains("女孩"))) {
+                            String[] keywords = {"生", "育", "双方"};
+                            fnull = 1;
+                            //System.out.println("有");
+                            for (String keyword : keywords) {
+                                //System.out.println("有");
+                                int start = value.indexOf(keyword);
+                                //System.out.println(start);
+                                znqk = value.substring(start + 1);
+                                li.add(znqk);
+
+                            }
+                        } else if (value.contains("未生育") || value.contains("未育有")) {
+                            li.add("无子女");
+                            fnull = 1;
+                        }
+                    }
+
+                    TimeUtil.removeDuplicateWithOrder(li);
+                    String syznqk=li.toString();
+                    syznqkNode.addAttribute("value",syznqk);
+                }
+            }
+        }
+        if(fnull == 0){
+            syznqkNode.addAttribute("value","未提及");
+        }
+    }
+
+    //24.信息项：子女特殊情况 简介：子女有无重大疾病或其他特殊情况
+    public static void zntsqk(Document document,Element newroot)
+    {
+        Element zntsqkNode=newroot.addElement("ZNTSQK");
+        zntsqkNode.addAttribute("nameCN", "子女有无重大疾病或其他特殊情况");
+        String ifhb="否";
+        int fnull=0;
+        Element root=document.getRootElement();
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode = root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){//查明事实段
+                List<Element> cmssdNode = ajjbqkNode.elements("CMSSD");
+                for(Element e:cmssdNode){
+                    if(e.attribute("value")!=null){
+                        String[]  qwStrarray= e.attributeValue("value").split("。");
+                        //子女有无重大疾病或其他特殊情况
+                        for(String qw:qwStrarray){
+                            if(qw.contains("患有")||qw.contains("患病")||qw.contains("事故")
+                                    ||qw.contains("病情")||qw.contains("遭遇")||qw.contains("遇到")){
+                                fnull = 1;
+                                if(qw.contains("子")||qw.contains("女")){
+                                    ifhb=qw.toString();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(fnull == 0){
+            zntsqkNode.addAttribute("value","未提及");
+        }else{
+            zntsqkNode.addAttribute("value",ifhb);
+        }
+    }
+
+    /*
+     * 25.信息项：子女意见 简介：父母双方对十周岁以上的未成年子女随父或随母生活发生争执的，该子女的意见
+     */
+
+    public static void ZNYJ(Document document,Element newroot){
+        Element root = document.getRootElement();
+        Element ZVYJNode = newroot.addElement("SZSYSZNYJ").addAttribute("nameCN", "父母双方对十周岁以上的未成年子女随父或随母生活发生争执的，该子女的意见");
+        String zvyj = "未提及";
+
+        if(root.element("CPFXGC")!=null){
+            Element cpfxgcNode = root.element("CPFXGC");
+            if(cpfxgcNode.attribute("value")!=null){
+                String qwStr = cpfxgcNode.attributeValue("value");
+                String[] qwStrarray = qwStr.split("。");
+                for(String qw:qwStrarray){
+                    if((qw.contains("婚生")||qw.contains("原、被告")||qw.contains("双方"))&&(qw.contains("子")||qw.contains("女"))){
+                        if((qw.contains("未超过")||qw.contains("未满")||qw.contains("不满")||qw.contains("不足")||qw.contains("未足")||qw.contains("以下"))&&qw.contains("十周岁")){
+                            zvyj = "未超过十周岁";
+                        }
+                        else if(qw.contains("意见")||qw.contains("意愿")||qw.contains("愿意随")||qw.contains("愿随")){
+                            {
+                                String[] qwarrayList = qw.split("，");
+                                for(String qwarray:qwarrayList){
+                                    int start=0;
+                                    int end=0;
+                                    if(qwarray.contains("随")&&qwarray.contains("生活")){
+                                        start = qwarray.indexOf("随");
+                                        end = qwarray.indexOf("生活");
+
+                                    }
+                                    else if(qwarray.contains("由")&&qwarray.contains("抚养")){
+                                        start = qwarray.indexOf("由");
+                                        end = qwarray.indexOf("抚养");
+                                    }
+                                    if(start<end){
+                                        zvyj = qwarray.substring(start,end+2);
+
+                                    }
+
+                                }
+
+                            }
+                        }
+
+                    }
+
+                }
+            }
+//            System.out.println(zvyj);
+        }
+        ZVYJNode.addAttribute("value",zvyj);
+    }
+
+
+    /*
+     * 26.信息项：两周岁以下子女是否存在可随父方生活 简介：两周岁以下的子女，是否存在可随父方生活的情形
+     */
+    public static void LZSYXZNSFCZKSFFSH(Document document,Element newroot){
+        Element root = document.getRootElement();
+        Element LZSYXZNNode = newroot.addElement("LZSYXZNSFCZKSFFSH").addAttribute("nameCN", "两周岁以下的子女，是否存在可随父方生活的情形");
+        String ifcz = "否";
+        String bgxb = "";//被告性别
+        String ygxb = "";//原告性别
+        int flag;
+        int flagy = 0;
+        int flagb = 0;
+
+        if(root.element("SSCYRQJ")!=null){//获取原被告性别
+            Element SSCYRQJNode = root.element("SSCYRQJ");
+            if(SSCYRQJNode.attribute("value")!=null){
+                String[] sccyr = SSCYRQJNode.attributeValue("value").split("。");
+                //System.out.println(SSCYRQJNode.attributeValue("value"));
+                for(String cyrall:sccyr){
+                    String cyr = cyrall.trim();
+                    if(cyr.startsWith("原告")||cyr.startsWith("被告")){
+                        flag = 0;
+                        if(cyr.startsWith("原告")){
+                            flag=1;
+                        }
+                        if(cyr.startsWith("被告")){
+                            flag=-1;
+                        }
+
+                        String[] cyrsplit = cyr.split("，");
+                        for(int i = 1;i<cyrsplit.length;i++){
+                            if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==1&&flagy!=1){
+                                ygxb = cyrsplit[i];
+                                flagy =1;
+                                break;
+                            }else if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==-1&&flagb!=1){
+                                bgxb = cyrsplit[i];
+                                flagb=1;
+                                break;
+                            }
+                        }
+                    }
+                    //	System.out.println("y"+ygxb);
+                    //    System.out.println("b"+bgxb);
+                }
+            }
+            LZSYXZNNode.addAttribute("value",ifcz);
+        }
+        if(root.element("CPFXGC")!=null){
+            Element cpfxgcNode = root.element("CPFXGC");
+            if(cpfxgcNode.attribute("value")!=null){
+                String qwStr = cpfxgcNode.attributeValue("value");
+                String[] qwStrarray = qwStr.split("。");
+                for(String qw:qwStrarray){
+                    if((qw.contains("婚生")||qw.contains("原、被告")||qw.contains("双方"))&&(qw.contains("子")||qw.contains("女"))){
+                        //	 System.out.println("all"+qw);
+                        if((qw.contains("两周岁")||qw.contains("两岁"))&&(qw.contains("未满")&&qw.contains("不满")||qw.contains("不足")||qw.contains("未足")||qw.contains("以下"))){
+                            int start=0;
+                            int end=0;
+                            String sub = "";
+                            if(qw.contains("随")&&qw.contains("生活")){
+                                start = qw.indexOf("随");
+                                end = qw.indexOf("生活");
+
+                            }
+                            else if(qw.contains("由")&&qw.contains("抚养")){
+                                start = qw.indexOf("由");
+                                end = qw.indexOf("抚养");
+                            }
+                            if(start<end){
+                                sub = qw.substring(start,end+2);
+
+                            }else{
+                                sub =qw;
+                            }
+                            if(sub.contains("父")){
+                                ifcz = "是";
+                                System.out.println("row28"+ifcz);
+
+                            }
+                            else if(sub.contains("原告")&&ygxb.contains("男")){
+                                ifcz = "是";
+                                System.out.println("row28"+ifcz);
+                            }
+                            else if(sub.contains("被告")&&bgxb.contains("男")){
+                                ifcz = "是";
+                                System.out.println("row28"+ifcz);
+                            }
+                            //	  System.out.println(document.getName());
+                            break;
+
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+
+    }
+    /*
+     * 27-1.信息项：母方严重疾病 简介：母方患有久治不愈的传染性疾病或其他严重疾病，子女不宜与其共同生活的情形：
+     */
+    public static void MFYZJB(Document document,Element newroot){
+        Element root = document.getRootElement();
+        Element YZJBNode = newroot.addElement("MFYZJB").addAttribute("nameCN", "母方患有久治不愈的传染性疾病或其他严重疾病，子女不宜与其共同生活的情形");
+        String bgxb = "";//被告性别
+        String ygxb = "";//原告性别
+        int flag = 0 ;
+        int flagy = 0;
+        int flagb = 0;
+        int flagzvnl = 0;
+        String ifcc = "否";
+        //是否子女两周岁以下
+        if(root.element("CPFXGC")!=null){
+            Element cpfxgcNode = root.element("CPFXGC");
+            if(cpfxgcNode.attribute("value")!=null){
+                String qwStr = cpfxgcNode.attributeValue("value");
+                String[] qwStrarray = qwStr.split("。");
+                for(String qw:qwStrarray){
+                    if((qw.contains("婚生")||qw.contains("原、被告")||qw.contains("双方"))&&(qw.contains("子")||qw.contains("女"))){
+                        //	 System.out.println("all"+qw);
+                        if((qw.contains("两周岁")||qw.contains("两岁"))&&(qw.contains("未满")&&qw.contains("不满")||qw.contains("不足")||qw.contains("未足")||qw.contains("以下"))){
+                            flagzvnl =1;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(flagzvnl == 1){
+
+            if(root.element("SSCYRQJ")!=null){//获取原被告性别
+                Element SSCYRQJNode = root.element("SSCYRQJ");
+                if(SSCYRQJNode.attribute("value")!=null){
+                    String[] sccyr = SSCYRQJNode.attributeValue("value").split("。");
+                    //System.out.println(SSCYRQJNode.attributeValue("value"));
+                    for(String cyrall:sccyr){
+                        String cyr = cyrall.trim();
+                        if(cyr.startsWith("原告")||cyr.startsWith("被告")){
+                            flag = 0;
+                            if(cyr.startsWith("原告")){
+                                flag=1;
+                            }
+                            if(cyr.startsWith("被告")){
+                                flag=-1;
+                            }
+
+                            String[] cyrsplit = cyr.split("，");
+                            for(int i = 1;i<cyrsplit.length;i++){
+                                if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==1&&flagy!=1){
+                                    ygxb = cyrsplit[i];
+                                    flagy =1;
+                                    break;
+                                }else if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==-1&&flagb!=1){
+                                    bgxb = cyrsplit[i];
+                                    flagb=1;
+                                    break;
+                                }
+                            }
+                        }
+                        //	System.out.println("y"+ygxb);
+                        //    System.out.println("b"+bgxb);
+                    }
+                }
+            }
+            String flagsex ="XXX";
+            if(bgxb.contains("女")){
+                flagsex = "被告";
+            }else if(ygxb.contains("女")){
+                flagsex = "原告";
+            }
+            //	System.out.println("flag"+flagsex);
+            // System.out.println(flagsex);
+            //	 System.out.println(ygxb);
+            //	 System.out.println(bgxb);
+            //	 System.out.println(document.getName());
+            String alljd = "";
+            //首先判断母方是否患病
+            if(root.element("CPFXGC")!=null){
+                Element cpfxgcNode = root.element("CPFXGC");
+                if(cpfxgcNode.attribute("value")!=null){
+                    String qwStr = cpfxgcNode.attributeValue("value");
+                    alljd +=qwStr;
+
+                }
+            }
+            if(root.element("AJJBQK")!=null&&flag!=2){
+                Element ajjbqkNode = root.element("AJJBQK");
+                if(ajjbqkNode.element("CMSSD")!=null){
+                    List<Element> cmssdNode = ajjbqkNode.elements("CMSSD");
+                    for(Element e:cmssdNode){
+                        if(e.attribute("value")!=null){
+                            String qwStr = e.attributeValue("value");
+                            alljd += qwStr;
+                        }
+                    }
+                }
+            }
+            String[] qwStrarray = alljd.split("，|。|；|、");
+            for(String qw:qwStrarray){ //判断母方是否患病
+                if((qw.contains("病")||qw.contains("症"))&&qw.contains(flagsex)){
+                    flag =2;
+                    break;
+                }
+            }
+            qwStrarray = alljd.split("。");
+            if(flag ==2){
+                // System.out.println(flagsex);
+                // System.out.println(ygxb);
+                // System.out.println(bgxb);
+                // System.out.println(document.getName());
+                for(String qw:qwStrarray){
+                    if((qw.contains("孩子")||qw.contains("子")||qw.contains("女"))&&
+                            (qw.contains("抚育")||qw.contains("抚养"))&&(qw.contains("病")||qw.contains("症"))&&(
+                            qw.contains("不宜")||qw.contains("不利"))){
+                        ifcc = "是";
+
+                        System.out.println("row28-1"+ifcc);
+
+                        break;
+
+                    }
+                }
+            }
+        }
+        YZJBNode.addAttribute("value",ifcc);
+
+
+    }
+    /*
+     * 27-2.信息项：母方有抚养条件不尽抚养义务 简介：母方有抚养条件不尽抚养义务，而父方要求子女随其生活的情形
+     */
+
+    public static void MFYFYTJBJFYYW(Document document,Element newroot){
+        Element root = document.getRootElement();
+        Element MFBJFYYWNode = newroot.addElement("MFYFYTJBJFYYW").addAttribute("nameCN", "母方有抚养条件不尽抚养义务，而父方要求子女随其生活的情形");
+        String bgxb = "";//被告性别
+        String ygxb = "";//原告性别
+        int flag = 0 ;
+        int flagy = 0;
+        int flagb = 0;
+        int flagzvnl = 0;
+        String ifcc = "否";
+        //是否子女两周岁以下
+        if(root.element("CPFXGC")!=null){
+            Element cpfxgcNode = root.element("CPFXGC");
+            if(cpfxgcNode.attribute("value")!=null){
+                String qwStr = cpfxgcNode.attributeValue("value");
+                String[] qwStrarray = qwStr.split("。");
+                for(String qw:qwStrarray){
+                    if((qw.contains("婚生")||qw.contains("原、被告")||qw.contains("双方"))&&(qw.contains("子")||qw.contains("女"))){
+                        //	 System.out.println("all"+qw);
+                        if((qw.contains("两周岁")||qw.contains("两岁"))&&(qw.contains("未满")&&qw.contains("不满")||qw.contains("不足")||qw.contains("未足")||qw.contains("以下"))){
+                            flagzvnl =1;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(flagzvnl == 1){
+            if(root.element("SSCYRQJ")!=null){//获取原被告性别
+                Element SSCYRQJNode = root.element("SSCYRQJ");
+                if(SSCYRQJNode.attribute("value")!=null){
+                    String[] sccyr = SSCYRQJNode.attributeValue("value").split("。");
+                    //System.out.println(SSCYRQJNode.attributeValue("value"));
+                    for(String cyrall:sccyr){
+                        String cyr = cyrall.trim();
+                        if(cyr.startsWith("原告")||cyr.startsWith("被告")){
+                            flag = 0;
+                            if(cyr.startsWith("原告")){
+                                flag=1;
+                            }
+                            if(cyr.startsWith("被告")){
+                                flag=-1;
+                            }
+
+                            String[] cyrsplit = cyr.split("，");
+                            for(int i = 1;i<cyrsplit.length;i++){
+                                if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==1&&flagy!=1){
+                                    ygxb = cyrsplit[i];
+                                    flagy =1;
+                                    break;
+                                }else if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==-1&&flagb!=1){
+                                    bgxb = cyrsplit[i];
+                                    flagb=1;
+                                    break;
+                                }
+                            }
+                        }
+                        //	System.out.println("y"+ygxb);
+                        //    System.out.println("b"+bgxb);
+                    }
+                }
+            }
+            String flagsex ="";
+            String uflagsex = "";
+            if(bgxb.contains("女")){
+                flagsex = "被告";
+                uflagsex = "原告";
+            }else if(ygxb.contains("女")){
+                flagsex = "原告";
+                uflagsex = "被告";
+            }
+
+            int flagq =0;
+            //首先看母亲有没有尽到抚养义务
+            if(root.element("CPFXGC")!=null){
+                Element cpfxgcNode = root.element("CPFXGC");
+                if(cpfxgcNode.attribute("value")!=null){
+                    String qwStr = cpfxgcNode.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("。|，");
+                    for(String qw:qwStrarray){
+                        if((qw.contains(flagsex)||qw.contains("母"))&&qw.contains("抚养义务")
+                                &&(qw.contains("不履行")||qw.contains("未尽")||qw.contains("未履行"))){
+                            int d1 = 10000;
+                            int d2 = 10000;
+                            int d3 = 10000;
+                            int dt = 10000;
+                            int d = qw.indexOf("抚养");
+
+                            if(qw.contains("原告")){
+                                d1 = Math.abs(qw.indexOf("原告")-d);
+                            }
+                            if(qw.contains("被告")){
+                                d2 =  Math.abs(qw.indexOf("被告")-d);
+                            }
+                            if(qw.contains(flagsex)){
+                                dt =  Math.abs(qw.indexOf(flagsex)-d);
+                            }
+                            if(qw.contains("母亲")){
+                                d3 =  Math.abs(qw.indexOf("母亲")-d);
+                            }
+                            if(dt<=Math.min(d1, d2)||d3<=Math.min(d1, d2)){
+
+
+                                flagq =1 ;
+                            }
+                        }
+                    }
+
+                }
+            }
+            if(flagq ==1){
+                String nodeStr = "";
+                if(uflagsex.equals("原告")){
+                    nodeStr = "YGSCD";
+                }else{
+                    nodeStr = "BGBCD";
+                }
+                if(root.element("AJJBQK")!=null){
+                    Element ajNode = root.element("AJJBQK");
+                    if(ajNode.element(nodeStr)!=null){
+                        Element node = ajNode.element(nodeStr);
+                        if(node.attribute("value")!=null){
+                            String[] nodeStrall = node.attributeValue("value").split("，|。");
+                            for(String str:nodeStrall){
+                                if((str.contains("婚生")||str.contains("原、被告")|| str.contains("双方"))&&
+                                        (str.contains("子")||str.contains("女"))&&(str.contains("抚养")||str.contains("生活"))){
+                                    if(str.contains("本人")||str.contains("自己")||str.contains("我")||str.contains(uflagsex)||str.contains("父")){
+                                        ifcc ="是";
+                                        System.out.println(document.getName());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        MFBJFYYWNode.addAttribute("value",ifcc);
+    }
+    /*
+     * 27-3.信息项：其他原因子女无法随母生活 简介：因其他原因，子女确无法随母方生活的情形
+     */
+    public static void QTYYZNWFSMSH(Document document,Element newroot){
+        Element root = document.getRootElement();
+        Element QTYYNode = newroot.addElement("QTYYZNWFSMSH").addAttribute("nameCN", "因其他原因，子女确无法随母方生活的情形");
+        String bgxb = "";//被告性别
+        String ygxb = "";//原告性别
+        int flag = 0 ;
+        int flagy = 0;
+        int flagb = 0;
+        int flagzvnl = 0;
+        String ifcc = "否";
+        if(root.element("CPFXGC")!=null){
+            Element cpfxgcNode = root.element("CPFXGC");
+            if(cpfxgcNode.attribute("value")!=null){
+                String qwStr = cpfxgcNode.attributeValue("value");
+                String[] qwStrarray = qwStr.split("。");
+                for(String qw:qwStrarray){
+                    if((qw.contains("婚生")||qw.contains("原、被告")||qw.contains("双方"))&&(qw.contains("子")||qw.contains("女"))){
+                        //	 System.out.println("all"+qw);
+                        if((qw.contains("两周岁")||qw.contains("两岁"))&&(qw.contains("未满")&&qw.contains("不满")||qw.contains("不足")||qw.contains("未足")||qw.contains("以下"))){
+                            flagzvnl =1;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(flagzvnl == 1){
+            if(root.element("SSCYRQJ")!=null){//获取原被告性别
+                Element SSCYRQJNode = root.element("SSCYRQJ");
+                if(SSCYRQJNode.attribute("value")!=null){
+                    String[] sccyr = SSCYRQJNode.attributeValue("value").split("。");
+                    //System.out.println(SSCYRQJNode.attributeValue("value"));
+                    for(String cyrall:sccyr){
+                        String cyr = cyrall.trim();
+                        if(cyr.startsWith("原告")||cyr.startsWith("被告")){
+                            flag = 0;
+                            if(cyr.startsWith("原告")){
+                                flag=1;
+                            }
+                            if(cyr.startsWith("被告")){
+                                flag=-1;
+                            }
+                            String[] cyrsplit = cyr.split("，");
+                            for(int i = 1;i<cyrsplit.length;i++){
+                                if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==1&&flagy!=1){
+                                    ygxb = cyrsplit[i];
+                                    flagy =1;
+                                    break;
+                                }else if((cyrsplit[i].contains("男")||cyrsplit[i].contains("女"))&&flag==-1&&flagb!=1){
+                                    bgxb = cyrsplit[i];
+                                    flagb=1;
+                                    break;
+                                }
+                            }
+                        }
+                        //	System.out.println("y"+ygxb);
+                        //    System.out.println("b"+bgxb);
+                    }
+                }
+            }
+            String flagsex ="";
+            if(bgxb.contains("女")){
+                flagsex = "被告";
+            }else if(ygxb.contains("女")){
+                flagsex = "原告";
+            }
+
+            if(root.element("CPFXGC")!=null){
+                Element cpfxgcNode = root.element("CPFXGC");
+                if(cpfxgcNode.attribute("value")!=null){
+                    String qwStr = cpfxgcNode.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("。|，");
+                    for(String qw:qwStrarray){
+                        if((qw.contains("婚生")||qw.contains("原、被告")|| qw.contains("双方"))&&
+                                (qw.contains("子")||qw.contains("女"))
+                                &&(qw.contains("不随")||qw.contains("不由")||qw.contains("无法随"))&&
+                                (qw.contains("母")||qw.contains(flagsex))){
+                            ifcc = "是";
+//                            System.out.println(qw);
+                        }
+                    }
+                }
+            }
+
+        }
+        QTYYNode.addAttribute("value",ifcc);
+    }
+    /*
+     * 28.简介：起诉时子女生活、学习现状
+     */
+
+    public static void QSSZNSHXXXZ(Document document,Element newroot){
+        Element root = document.getRootElement();
+        Element ZNZKNode = newroot.addElement("QSSZNSHXXXZ").addAttribute("nameCN", "起诉时子女生活、学习现状");
+        StringBuilder allStr = new StringBuilder();
+        if(root.element("AJJBQK")!=null){
+            Element ajjbqkNode = root.element("AJJBQK");
+            if(ajjbqkNode.element("CMSSD")!=null){
+                List<Element> cmssdNode = ajjbqkNode.elements("CMSSD");
+                for(Element e:cmssdNode){
+                    if(e.attribute("value")!=null){
+                        String qwStr = e.attributeValue("value");
+                        String[] qwStrarray = qwStr.split("。");
+
+
+                        for(String qw:qwStrarray){
+                            int flag = 0;
+                            String[] qwlist = qw.split("，");
+                            for(String qwlistsp:qwlist){
+                                if((qwlistsp.contains("婚生")||qwlistsp.contains("原、被告")||qwlistsp.contains("原告之")||qwlistsp.contains("被告之")||qwlistsp.contains("双方")||qwlistsp.contains("生"))&&(qwlistsp.contains("子")||qwlistsp.contains("女"))){
+                                    flag  = 1;
+                                    allStr.append(qwlistsp).append("。");
+
+                                }else if(qwlistsp.contains("现")){
+                                    if(flag == 1){
+                                        allStr.append(qwlistsp);
+                                        flag = 0;
+                                    }
+                                }
+                            }
+
+                        }
+//                        System.out.println(allStr);
+
+                    }
+                }
+            }
+
+        }
+        if(allStr.toString().equals("")){
+            ZNZKNode.addAttribute("value","未提及");
+        }else{
+            ZNZKNode.addAttribute("value", allStr.toString());
+        }
+    }
+
+    //信息项：优先跟随一方 简介：对两周岁以上未成年的子女，是否存在可予优先考虑与一方生活的情形
+    public static void YXGSYF(Document document,Element newroot){
+        Element YXGSYF = newroot.addElement("YXGSYF").addAttribute("nameCN", "两周岁以上子女优先考虑抚养权的因素");
+        if(JYYS(document,YXGSYF)||SHHJYS(document,YXGSYF)||YFYQTZN(document,YXGSYF)||SFCZYFBLYS(document,YXGSYF)){
+            YXGSYF.addAttribute("value","是");
+        }else{
+            YXGSYF.addAttribute("value","否");
+        }
+    }
+
+    // 29-4. 信息项：是否存在一方不利因素 简介：是否存在子女随其生活，对子女成长有利，而另一方患有久治不愈的传染性疾病或其他严重疾病，
+    //     *  或者有其他不利于子女身心健康的情形，不宜与子女共同生活的情形：
+
+    public static boolean SFCZYFBLYS(Document document,Element newroot){
+        boolean result = false;
+        Element root = document.getRootElement();
+        Element row29_4Node = newroot.addElement("YFBLYS").addAttribute("nameCN", "一方不利因素");
+        String yfblys = "未提及或不考虑";//一方不利因素
+        Iterator it = root.elementIterator();
+        int fnull = 0;
+        while(it.hasNext()){
+            Element Node = (Element) it.next();
+            if(Node.getName().equals("CPFXGC")) {
+                if(Node.attribute("value")!=null) {
+                    String qwStr = Node.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("。|；");
+                    for(String qw:qwStrarray) {
+                        if((qw.contains("成长有利")||qw.contains("成长不利")
+                                ||qw.contains("有利于孩子")||qw.contains("不利于孩子")
+                                ||qw.contains("有利于子女")||qw.contains("有利于小孩")
+                                ||qw.contains("由原告抚养为宜")||qw.contains("由被告抚养为宜")
+                                ||(((qw.contains("有利于")||qw.contains("不利于"))&&qw.contains("身心健康"))))
+                                ||((qw.contains("病")||qw.contains("患"))
+                                &&(((qw.contains("婚生")||qw.contains("双方"))&&(qw.contains("子")||qw.contains("女")))
+                                &&(qw.contains("由")||qw.contains("跟")||qw.contains("随"))
+                                &&(qw.contains("被告")||qw.contains("原告")||qw.contains("父亲")||qw.contains("母亲"))
+                                &&(qw.contains("生活")||qw.contains("抚养")||qw.contains("抚育"))))){
+                            fnull = 1;
+//                            System.out.println(document.getName());
+                            yfblys = qw;
+//                            System.out.println(qw);
+                            if(!yfblys.equals("未提及或不考虑")) {
+                                result = true;
+//                                System.out.println("29-4");
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        if(fnull == 0){
+            row29_4Node.addAttribute("value","未提及");
+        }else{
+            if(!(yfblys.equals("未提及或不考虑"))) {
+                row29_4Node.addAttribute("value","是");
+            }
+            else {
+                row29_4Node.addAttribute("value","否");
+            }
+        }
+    return result;
+    }
+
+    //29-3. 信息项：一方有其他子女 简介：无其他子女，而另一方有其他子女的情形
+    public static boolean YFYQTZN(Document document,Element newroot){
+        boolean result = false;
+        Element root = document.getRootElement();
+        Element row29_3Node = newroot.addElement("YFYQTZN").addAttribute("nameCN", "婚前有其他子女的因素");
+        String yfyqtzn = "未提及或不考虑";//一方有其他子女
+        Iterator it = root.elementIterator();
+        int fnull = 0;
+        while(it.hasNext()){
+            Element Node = (Element) it.next();
+            if(Node.getName().equals("CPFXGC")) {
+                if(Node.attribute("value")!=null) {
+                    String qwStr = Node.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("。|；");
+                    for(String qw:qwStrarray) {
+                        if((qw.contains("婚前子女")||qw.contains("婚前所生"))
+                                &&(!qw.contains("离婚前子女"))&&(!qw.contains("离婚前所生"))){
+                            fnull=1;
+//                            System.out.println(document.getName());
+                            yfyqtzn = qw;
+//                            System.out.println(qw);
+                            if(!yfyqtzn.equals("未提及或不考虑")) {
+                                result = true;
+//                                System.out.println("29-3");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if(fnull == 0){
+            row29_3Node.addAttribute("value","未提及");
+        }else{
+            if(!(yfyqtzn.equals("未提及或不考虑"))) {
+                row29_3Node.addAttribute("value","是");
+            }
+            else {
+                row29_3Node.addAttribute("value","否");
+            }
+        }
+        return result;
+    }
+
+    //29-2. 信息项：生活环境因素 简介：子女随其生活时间较长，改变生活环境对子女健康成长明显不利的情形
+
+    public static boolean SHHJYS(Document document,Element newroot){
+        boolean result = false;
+        Element root = document.getRootElement();
+        String shhj = "未提及或不考虑";//生活环境因素
+        Iterator it = root.elementIterator();
+        int fnull = 0;
+        while(it.hasNext()){
+            Element Node = (Element) it.next();
+            if(Node.getName().equals("CPFXGC")) {
+                if(Node.attribute("value")!=null) {
+                    String qwStr = Node.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("。|；");
+                    for(String qw:qwStrarray) {
+                        if(qw.contains("改变")&&qw.contains("生活环境")
+                                &&(qw.contains("有利")||qw.contains("不利"))){
+                            fnull =1;
+//                            System.out.println(document.getName());
+                            shhj = qw;
+//                            System.out.println(qw);
+                            if(!shhj.equals("未提及或不考虑")) {
+                                result = true;
+//                                System.out.println("29-2");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Element row29_2Node = newroot.addElement("row29_2").addAttribute("nameCN", "生活环境因素");
+        if(fnull == 0){
+            row29_2Node.addAttribute("value","未提及");
+        }else{
+            if(!(shhj.equals("未提及或不考虑"))) {
+                row29_2Node.addAttribute("value","是");
+            }else {
+                row29_2Node.addAttribute("value","否");
+            }
+        }
+    return result;
+    }
+
+    //29-1. 信息项：绝育因素 简介：已做绝育手术或因其他原因丧失生育能力的情形
+    public static boolean JYYS(Document document,Element newroot){
+        boolean result = false;
+        Element root = document.getRootElement();
+        String jyys = "未提及或不考虑";//绝育因素
+        Iterator it = root.elementIterator();
+        int fnull = 0;
+        while(it.hasNext()){
+            Element Node = (Element) it.next();
+            if(Node.getName().equals("CPFXGC")) {
+                if(Node.attribute("value")!=null) {
+                    String qwStr = Node.attributeValue("value");
+                    String[] qwStrarray = qwStr.split("。|；");
+                    for(String qw:qwStrarray) {
+                        if((qw.contains("生育能力")||(qw.contains("生育")&&qw.contains("疾病"))||qw.contains("无法生育")||qw.contains("绝育"))
+                                &&((qw.contains("婚生")||qw.contains("双方"))&&(qw.contains("子")||qw.contains("女"))
+                                &&(qw.contains("由")||qw.contains("跟")||qw.contains("随"))
+                                &&(qw.contains("被告")||qw.contains("原告")||qw.contains("父亲")||qw.contains("母亲"))
+                                &&(qw.contains("生活")||qw.contains("抚养")||qw.contains("抚育")))
+                        ){
+                            fnull = 1;
+//                            System.out.println(document.getName());
+                            jyys = qw;
+//                            System.out.println(jyys);
+                            if(!jyys.equals("未提及或不考虑")) {
+                                result = true;
+//                                System.out.println("29-1");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Element row29_1Node = newroot.addElement("JYYS").addAttribute("nameCN", "绝育因素");
+        if(fnull == 0){
+            row29_1Node.addAttribute("value","未提及");
+        }else{
+            if(!(jyys.equals("未提及或不考虑"))) row29_1Node.addAttribute("value","是");
+            else row29_1Node.addAttribute("value","否");
+        }
+        return result;
+    }
+
+//30.信息项：祖父母因素 简介：是否存在父、母抚养未成年子女的条件基本相同，双方均要求子女与其共同生活，但子女单独随祖父母或外祖父母共同生活多年，
+    //且祖父母或外祖父母要求并有能力帮助子女照顾孙子女或外孙子女的，可作为子女随父或母生活的优先条件予以考虑的情形
+
+    public static void  ZFMYS(Document document,Element new_root){
+        Element root = document.getRootElement();
+        String Grandpa = "未考虑或不存在";//祖父母因素
+        Element GRANDPA = new_root.addElement("GRANDPA").addAttribute("nameCN", "祖父母因素");
+        Iterator it = root.elementIterator();
+        boolean is_null = true;
+        while(it.hasNext()){
+            Element Node = (Element) it.next();
+            if(Node.getName().equals("CPFXGC")) {
+                if(Node.attribute("value")!=null){
+                    String key_sentence = Node.attributeValue("value");
+                    String[] key_words = key_sentence.split("。|；");
+                    for(String key:key_words){
+                        if((key.contains("祖母")||key.contains("祖父")||key.contains("爷爷")||
+                                key.contains("奶奶")||key.contains("外公")||key.contains("外婆"))&&(key.contains("生活")||key.contains("居住")||key.contains("抚养")||
+                                key.contains("成长"))&&(!(key.contains("房屋")||key.contains("财产")))) {
+                            is_null = false ;
+                            Grandpa = key;
+                        }
+                    }
+                }
+            }
+        }
+        if(is_null){
+            GRANDPA.addAttribute("value", "未提及");
+        }else{
+            if(!(Grandpa.equals("未考虑或不存在"))) {
+                GRANDPA.addAttribute("value", "是");
+            }
+            else {
+                GRANDPA.addAttribute("value", "否");
+            }
+        }
+    }
 
 }

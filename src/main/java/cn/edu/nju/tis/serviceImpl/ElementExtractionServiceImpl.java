@@ -6,7 +6,7 @@ import cn.edu.nju.tis.model.InformationItem;
 import cn.edu.nju.tis.repository.COARepository;
 import cn.edu.nju.tis.repository.InformationItemRepository;
 import cn.edu.nju.tis.service.ElementExtractionService;
-import cn.edu.nju.tis.utils.ChineseCharToEn;
+import cn.edu.nju.tis.utils.ChineseToPinYin;
 import cn.edu.nju.tis.utils.ResultMessageUtil;
 import cn.edu.nju.tis.utils.XmlUtil;
 import org.dom4j.Document;
@@ -95,10 +95,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         SAXReader reader = new SAXReader();
         File file = new File(path);
         Document document = reader.read(file);
-//        Element root = DocumentHelper.createElement();
-//        Document new_document = DocumentHelper.createDocument(root);
-        //initXML(document,root);
-        Element newRoot = DocumentHelper.createElement(ChineseCharToEn.getInstance().getAllFirstLetter(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
+        Element newRoot = DocumentHelper.createElement(ChineseToPinYin.getInstance().getPinYin(coaName)+"YSTQ").addAttribute("nameCN", coaName+"要素提取");
         Document new_document = DocumentHelper.createDocument(newRoot);
         //要素抽取
         invokeMethod(coa, informationItems, document, newRoot);
@@ -115,7 +112,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
         switch (coa.getType()) {
             case "CIVIL":
                 for (InformationItem item : informationItems) {
-                    String methodName = ChineseCharToEn.getInstance().getAllFirstLetter(item.getName());
+                    String methodName = ChineseToPinYin.getInstance().getPinYin(item.getName());
                     Class<?> clazz = Class.forName("cn.edu.nju.tis.serviceImpl.CivilExtractionServiceImpl");
                     Method method = clazz.getDeclaredMethod(methodName, Document.class, Element.class);
                     method.invoke(clazz.newInstance(),document, newRoot);
@@ -123,7 +120,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
                 break;
             case "ADMINISTRATIVE":
                 for (InformationItem item : informationItems) {
-                    String methodName = ChineseCharToEn.getInstance().getAllFirstLetter(item.getName());
+                    String methodName = ChineseToPinYin.getInstance().getPinYin(item.getName());
                     Class<?> clazz = Class.forName("cn.edu.nju.tis.serviceImpl.AdministrativeExtractionServiceImpl");
                     Method method = clazz.getDeclaredMethod(methodName, Document.class, Element.class);
                     method.invoke(clazz.newInstance(),document, newRoot);
@@ -132,7 +129,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
                 break;
             case "CRIMINAL":
                 for (InformationItem item : informationItems) {
-                    String methodName = ChineseCharToEn.getInstance().getAllFirstLetter(item.getName());
+                    String methodName = ChineseToPinYin.getInstance().getPinYin(item.getName());
                     Class<?> clazz = Class.forName("cn.edu.nju.tis.serviceImpl.CriminalExtractionServiceImpl");
                     Method method = clazz.getDeclaredMethod(methodName, Document.class, Element.class);
                     method.invoke(clazz.newInstance(),document, newRoot);
