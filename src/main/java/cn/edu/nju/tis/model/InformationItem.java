@@ -27,6 +27,8 @@ public class InformationItem implements Serializable {
 
     private String description;
 
+    private String example;
+
     public InformationItem(){ }
 
     public InformationItem(int id){
@@ -74,6 +76,15 @@ public class InformationItem implements Serializable {
         this.state = StateType.UNDER_REVIEWED.value;
     }
 
+    public InformationItem(String name, String code, String account, Integer coaId, String description, String example) {
+        this.name = name;
+        this.code = code;
+        this.account = account;
+        this.coaId = coaId;
+        this.description = description;
+        this.example = example;
+        this.state = StateType.UNDER_REVIEWED.value;
+    }
 
     public Integer getId() {
         return id;
@@ -129,6 +140,14 @@ public class InformationItem implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getExample() {
+        return example;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
     }
 
     @Override

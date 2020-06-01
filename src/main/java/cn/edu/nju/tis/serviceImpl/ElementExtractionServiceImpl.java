@@ -82,7 +82,7 @@ public class ElementExtractionServiceImpl implements ElementExtractionService {
      **/
     @Override
     public ResultMessageBean<Object> itemsExtraction(String fileName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, DocumentException, IOException {
-       String path = "src/main/resources/uploadXML/"+fileName;
+       String path = "src/main/resources/uploadXML/" + fileName;
        String coaName = getCOAName(path);
        if(coaName.equals("案由不存在")){
            return ResultMessageUtil.error(-1,"案由不存在");

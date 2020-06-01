@@ -3,16 +3,14 @@ package cn.edu.nju.tis.controller;
 import cn.edu.nju.tis.bean.ResultMessageBean;
 import cn.edu.nju.tis.model.InformationItem;
 import cn.edu.nju.tis.model.User;
-import cn.edu.nju.tis.service.COAService;
-import cn.edu.nju.tis.service.CauseOfActionManageService;
-import cn.edu.nju.tis.service.InfoItemService;
-import cn.edu.nju.tis.service.UserService;
+import cn.edu.nju.tis.service.*;
 import cn.edu.nju.tis.utils.ResultMessageUtil;
 import cn.edu.nju.tis.vo.COAandInfoItemVO;
 import cn.edu.nju.tis.vo.CauseOfActionVO;
 import cn.edu.nju.tis.vo.ModifiedCauseOfActionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,6 +28,9 @@ public class UserController {
 
     @Autowired
     private InfoItemService infoItemService;
+
+    @Autowired
+    private ElementExtractionService elementExtractionService;
 
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -70,7 +71,7 @@ public class UserController {
     @RequestMapping(value = "/addCauseOfAction", method = RequestMethod.POST)
     public ResultMessageBean addCauseOfAction(@RequestBody CauseOfActionVO causeOfActionVO){
         try{
-            return coaService.addCOA(causeOfActionVO.getType(), causeOfActionVO.getCoaName(), causeOfActionVO.getUserAccount(), causeOfActionVO.getImportPackages(),causeOfActionVO.getItemAndCode(), causeOfActionVO.getExistedItem());
+            return coaService.addCOA(causeOfActionVO.getType(), causeOfActionVO.getCoaName(), causeOfActionVO.getUserAccount(), causeOfActionVO.getImportPackages(),causeOfActionVO.getItems(), causeOfActionVO.getExistedItem());
         }catch (Exception e) {
             return ResultMessageUtil.error(-1,"案由添加失败");
         }
@@ -96,4 +97,14 @@ public class UserController {
         return ResultMessageUtil.success(infoItemListWithCode);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/extract", method = RequestMethod.POST)
+    public ResultMessageBean extract(@RequestParam("files") MultipartFile[] files){
+        try {
+            return elementExtractionService.uploadXML(files);
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResultMessageUtil.error(-1,"要素抽取失败");
+        }
+    }
 }
